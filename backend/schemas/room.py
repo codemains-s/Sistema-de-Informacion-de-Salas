@@ -7,9 +7,5 @@ class Room(BaseModel):
     capacity: int
     status: str
     image: str
-    
-    
-    
-
-class SalaOut(Room):
+class RoomOut(Room):
    id : int

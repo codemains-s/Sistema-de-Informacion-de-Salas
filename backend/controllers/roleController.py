@@ -33,4 +33,5 @@ def delete_role(id: int, db):
     return db_role
 
 def exist_role(name:str, db):
-    return db.query(Role).filter(func.upper(Role.name) == name.upper()).first() is not None
+    role = db.query(Role).filter(func.upper(Role.name) == name.upper()).first()
+    return role

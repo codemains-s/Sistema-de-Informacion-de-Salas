@@ -6,5 +6,5 @@ class UserRoom(BaseModel):
     date: str
     hour: str
 
-class UserRoomsOut(UserRoom):
+class UserRoomOut(UserRoom):
     id: int

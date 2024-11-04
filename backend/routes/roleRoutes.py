@@ -14,7 +14,7 @@ def create_new_role(role: Role, db: Session = Depends(get_db)):
     if exist:
         return {"error": "Role already exists"}
     new_rolee = create_role(role, db)
-    return new_rolee
+    return Role(**new_rolee.__dict__)
 
 # get role by name
 
@@ -23,7 +23,7 @@ def get_role(name: str, db: Session = Depends(get_db)):
     exist = exist_role(name, db)
     if not exist:
         return {"message": "Role not exist"}
-    return RoleOut(**exist.dict())
+    return RoleOut(**exist.__dict__)
 
 # get all roles
 

@@ -39,4 +39,4 @@ def delete_user(user_id: int, db):
 
 def exist_user(name: str, db):
     user = db.query(User).filter(func.upper(User.name) == name.upper()).first()
-    return user is not None
+    return user

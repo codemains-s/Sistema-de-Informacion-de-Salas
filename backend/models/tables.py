@@ -48,21 +48,25 @@ class Schedule(Base):
     rooms = relationship('RoomSchedule', back_populates='schedule')
 
 class RoomSchedule(Base):
-    __tablename__ = 'room_schedules'
+    __tablename__ = 'roomschedule'
     
     id = Column(Integer, primary_key=True, index=True)
     room_id = Column(Integer, ForeignKey('rooms.id'))
     schedule_id = Column(Integer, ForeignKey('schedules.id'))
+    date = Column(String(100))
+    hour = Column(String(100))
     
     room = relationship('Room', back_populates='schedules')
     schedule = relationship('Schedule', back_populates='rooms')
 
 class UserRoom(Base):
-    __tablename__ = 'user_rooms'
+    __tablename__ = 'userrooms'
     
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     room_id = Column(Integer, ForeignKey('rooms.id'))
+    date = Column(String(100))
+    hour = Column(String(100))
     
     user = relationship('User', back_populates='rooms')
     room = relationship('Room', back_populates='users')

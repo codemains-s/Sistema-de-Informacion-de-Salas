@@ -5,5 +5,5 @@ class Schedule(BaseModel):
     start_time : str
     end_time : str
 
-class SheduleOut(Schedule):
+class ScheduleOut(Schedule):
    id : int
