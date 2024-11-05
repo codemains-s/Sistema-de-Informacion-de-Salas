@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from schemas.role import Role, RoleOut
 from config.db import get_db
 from sqlalchemy.orm import Session
+from security.seguridad import Portador
 from controllers.roleController import all_roles, create_role, update_role, delete_role, exist_role
 
 router = APIRouter()
@@ -18,7 +19,7 @@ def create_new_role(role: Role, db: Session = Depends(get_db)):
 
 # get role by name
 
-@router.get("/role/{name}")
+@router.get("/role/{name}", dependencies=[Depends(Portador())])
 def get_role(name: str, db: Session = Depends(get_db)):
     exist = exist_role(name, db)
     if not exist:
@@ -27,13 +28,13 @@ def get_role(name: str, db: Session = Depends(get_db)):
 
 # get all roles
 
-@router.get("/all_roles")
+@router.get("/all_roles", dependencies=[Depends(Portador())])
 def get_all_roles(db: Session = Depends(get_db)):
     return all_roles(db)
 
 # delete role
 
-@router.delete("/delete_role/{role_id}")
+@router.delete("/delete_role/{role_id}", dependencies=[Depends(Portador())])
 def delete_roles(role_id: int, db: Session = Depends(get_db)):
     role_deleted = delete_role(role_id, db)
     if not role_deleted:
@@ -43,7 +44,7 @@ def delete_roles(role_id: int, db: Session = Depends(get_db)):
 
 # update role
 
-@router.put("/update_role/{role_id}")
+@router.put("/update_role/{role_id}", dependencies=[Depends(Portador())])
 def update_role_by_id(role_id: int, role: Role, db: Session = Depends(get_db)):
     role_updated = update_role(role_id, role, db)
     if not role_updated:

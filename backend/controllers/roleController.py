@@ -17,7 +17,8 @@ def get_role_by_id(id: int, db):
     return db.query(Role).filter(Role.id == id).first()
 
 def get_role_by_name(name:str, db):
-    return db.query(Role).filter(Role.name == name).first()
+    rol = db.query(Role).filter(Role.name == name).first()
+    return rol.id
 
 def update_role(id_role, updated_role: Role, db):
     db_role = db.query(Role).filter(Role.id == id_role).first()
@@ -29,6 +30,13 @@ def update_role(id_role, updated_role: Role, db):
 def delete_role(id: int, db):
     db_role = db.query(Role).filter(Role.id == id).first()
     db.delete(db_role)
+    db.commit()
+    role_count = db.query(Role).count()
+    if role_count == 0:
+        db.execute(text("ALTER TABLE roles AUTO_INCREMENT = 1"))
+    else:
+        max_id = db.query(func.max(Role.id)).scalar()
+        db.execute(text(f"ALTER TABLE roles AUTO_INCREMENT = {max_id + 1}"))
     db.commit()
     return db_role
 

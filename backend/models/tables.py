@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from config.db import Base
 
@@ -9,8 +9,10 @@ class User(Base):
     name = Column(String(254))
     email = Column(String(100))
     password = Column(String(100))
+    token = Column(String(500))
+    birthdate = Column(Date)
     phone = Column(String(20))
-    role_id = Column(Integer, ForeignKey('roles.id'), unique=True)
+    role_id = Column(Integer, ForeignKey('roles.id'))
     
     role = relationship('Role', back_populates='users', uselist=False)
     rooms = relationship('UserRoom', back_populates='user')

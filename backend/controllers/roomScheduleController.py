@@ -1,5 +1,7 @@
 from schemas.roomSchedules import RoomSchedule
 from models.tables import *
+from sqlalchemy import func, text
+
 
 def create_room_schedule(room_shedule: RoomSchedule, db):
     new_room_schedule = RoomSchedule(**room_shedule.dict())
@@ -31,5 +33,13 @@ def delete_room_schedule(id_room_schedule: int, db):
     db_room_schedule = db.query(RoomSchedule).filter(RoomSchedule.id == id_room_schedule).first()
     db.delete(db_room_schedule)
     db.commit()
+    room_schedule_count = db.query(RoomSchedule).count()
+    if room_schedule_count == 0:
+        db.execute(text("ALTER TABLE roomschedules AUTO_INCREMENT = 1"))
+    else:
+        max_id = db.query(func.max(RoomSchedule.id)).scalar()
+        db.execute(text(f"ALTER TABLE roomschedules AUTO_INCREMENT = {max_id + 1}"))
+    db.commit()
+
     return db_room_schedule
 

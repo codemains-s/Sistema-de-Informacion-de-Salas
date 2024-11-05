@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, text
 from schemas.room import Room
 from models.tables import *
 from typing import List, Optional
@@ -35,6 +35,14 @@ def delete_room(id: int, db):
     db_room = db.query(Room).filter(Room.id == id).first()
     db.delete(db_room)
     db.commit()
+    room_count = db.query(Room).count()
+    if room_count == 0:
+        db.execute(text("ALTER TABLE rooms AUTO_INCREMENT = 1"))
+    else:
+        max_id = db.query(func.max(Room.id)).scalar()
+        db.execute(text(f"ALTER TABLE rooms AUTO_INCREMENT = {max_id + 1}"))
+    db.commit()
+
     return db_room
 
 def exist_room(name: str, db):
