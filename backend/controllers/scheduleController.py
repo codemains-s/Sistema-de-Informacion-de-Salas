@@ -1,5 +1,6 @@
 from schemas.schedule import Schedule
 from models.tables import *
+from sqlalchemy import func, text
 
 def create_schedule(schedule: Schedule, db):
     new_schedules = Schedule(**schedule.dict())
@@ -28,5 +29,12 @@ def update_schedule(schedule_id: int, schedule: Schedule, db):
 def delete_schedule(schedule_id: int, db):
     schedules = db.query(Schedule).filter(Schedule.id == schedule_id).first()
     db.delete(schedules)
+    db.commit()
+    schedule_count = db.query(Schedule).count()
+    if schedule_count == 0:
+        db.execute(text("ALTER TABLE schedules AUTO_INCREMENT = 1"))
+    else:
+        max_id = db.query(func.max(Schedule.id)).scalar()
+        db.execute(text(f"ALTER TABLE schedules AUTO_INCREMENT = {max_id + 1}"))
     db.commit()
     return schedules

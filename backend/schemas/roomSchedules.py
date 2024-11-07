@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
-class RoomSchedules(BaseModel):
+class RoomSchedule(BaseModel):
     room_id: int
     schedule_id: int
     date: str
     hour: str
 
-class HorarioPorSalaOut(RoomSchedules):
+class RoomScheduleOut(RoomSchedule):
     id: int

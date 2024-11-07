@@ -1,5 +1,6 @@
 from schemas.userRooms import UserRoom
 from models.tables import *
+from sqlalchemy import func, text
 
 def create_user_rooms(user_room: UserRoom, db):
     new_user_room = UserRoom(**user_room.dict())
@@ -27,5 +28,12 @@ def update_user_room(id: int, user_room: UserRoom, db):
 def delete_user_room(id: int, db):
     user_room_to_delete = db.query(UserRoom).filter(UserRoom.id == id).first()
     db.delete(user_room_to_delete)
+    db.commit()
+    user_room_count = db.query(UserRoom).count()
+    if user_room_count == 0:
+        db.execute(text("ALTER TABLE userrooms AUTO_INCREMENT = 1"))
+    else:
+        max_id = db.query(func.max(UserRoom.id)).scalar()
+        db.execute(text(f"ALTER TABLE userrooms AUTO_INCREMENT = {max_id + 1}"))
     db.commit()
     return user_room_to_delete

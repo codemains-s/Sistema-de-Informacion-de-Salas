@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from config.db import Base
 
@@ -9,8 +9,10 @@ class User(Base):
     name = Column(String(254))
     email = Column(String(100))
     password = Column(String(100))
+    token = Column(String(500))
+    birthdate = Column(Date)
     phone = Column(String(20))
-    role_id = Column(Integer, ForeignKey('roles.id'), unique=True)
+    role_id = Column(Integer, ForeignKey('roles.id'))
     
     role = relationship('Role', back_populates='users', uselist=False)
     rooms = relationship('UserRoom', back_populates='user')
@@ -48,21 +50,25 @@ class Schedule(Base):
     rooms = relationship('RoomSchedule', back_populates='schedule')
 
 class RoomSchedule(Base):
-    __tablename__ = 'room_schedules'
+    __tablename__ = 'roomschedule'
     
     id = Column(Integer, primary_key=True, index=True)
     room_id = Column(Integer, ForeignKey('rooms.id'))
     schedule_id = Column(Integer, ForeignKey('schedules.id'))
+    date = Column(String(100))
+    hour = Column(String(100))
     
     room = relationship('Room', back_populates='schedules')
     schedule = relationship('Schedule', back_populates='rooms')
 
 class UserRoom(Base):
-    __tablename__ = 'user_rooms'
+    __tablename__ = 'userrooms'
     
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     room_id = Column(Integer, ForeignKey('rooms.id'))
+    date = Column(String(100))
+    hour = Column(String(100))
     
     user = relationship('User', back_populates='rooms')
     room = relationship('Room', back_populates='users')

@@ -1,35 +1,61 @@
-from fastapi import APIRouter, Depends
-from schemas.user import User, UserOut
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from schemas.user import User, UserCreate, UserOut, UserUpdate
 from config.db import get_db
 from sqlalchemy.orm import Session
-from controllers.userController import create_user, get_all_users, update_user, delete_user, exist_user
+from controllers.emailController import send_welcome_email
+from security.seguridad import Portador
+from controllers.userController import (create_user, get_all_users, 
+                                        update_user, delete_user, exist_user, 
+                                        email_validation, validate_password, 
+                                        exist_token, password_context)
+
 
 router = APIRouter()
 
 # Create a new user
-@router.post("/new_user/")
-def new_user(user: User, db: Session = Depends(get_db)):
-    exist = exist_user(user.name, db)
-    if exist:
-        return {"error": "User already exists"}
-    new_userr = create_user(user, db)
-    return User(**new_userr.__dict__)
+@router.post("/register_user/")
+async def register(new_user: UserCreate, db: Session=Depends(get_db), code: str = ""):
+    email_validation(new_user.email)
+    validate_password(new_user.password)
+    if exist_user(new_user.email, db):
+        raise HTTPException(status_code=400, detail="User already exist")
+    
+    await send_welcome_email(new_user.email, new_user.name, Request)
+    token = create_user(new_user, code, db)
+    return {"message": "User created successfully"}
+
+# Login
+
+@router.post("/login_user/")
+def login(email: str, password: str, db: Session = Depends(get_db)):
+    email_validation(email)
+    usr = exist_user(email, db)
+    if not usr:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not exist")
+    if not password_context.verify(password, usr.password):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password incorrect")
+    token = exist_token(email, password, db)
+    if not token:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token not exist")
+    return {"Token": token}
+
+
 
 # get user by name
-@router.get("/user/{name}")
-def get_user(name: str, db: Session = Depends(get_db)):
-    exist = exist_user(name, db)
+"""@router.get("/user/{email}", dependencies=[Depends(Portador())])
+def get_user(email: str, db: Session = Depends(get_db)):
+    exist = exist_user(email, db)
     if not exist:
-        return {"message": "author not exist"}
-    return UserOut(**exist.__dict__)
+        return {"message": "user not exist"}
+    return UserOut(**exist.__dict__) """
 
 # get all users
-@router.get("/all_users/")
+@router.get("/all_users/", dependencies=[Depends(Portador())])
 def all_users(db: Session = Depends(get_db)):
     return get_all_users(db)
 
 # delete user
-@router.delete("/delete_user/{user_id}")
+@router.delete("/delete_user/{user_id}", dependencies=[Depends(Portador())])
 def delete_users(user_id: int, db: Session = Depends(get_db)):
     user_deleted = delete_user(user_id, db)
     if not user_deleted:
@@ -37,10 +63,9 @@ def delete_users(user_id: int, db: Session = Depends(get_db)):
     return {"message": "User deleted successfully"}
 
 # update user
-@router.put("/update_user/{user_id}")
+@router.put("/update_user/{user_id}", dependencies=[Depends(Portador())])
 def update_user_by_id(user_id: int, user: User, db: Session = Depends(get_db)):
     user_updated = update_user(user_id, user, db)
     if not user_updated:
         return {"message": "User not exist"}
     return user_updated
-
