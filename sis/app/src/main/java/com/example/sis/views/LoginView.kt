@@ -1,10 +1,8 @@
 package com.example.sis.views
 
-import androidx.compose.animation.VectorConverter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -12,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -22,8 +21,6 @@ import com.example.sis.R
 import com.example.sis.logic.user.logicUser.LoginResult
 import com.example.sis.logic.user.logicUser.loginUser
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
 fun LoginView(
@@ -37,7 +34,7 @@ fun LoginView(
     var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var token by remember { mutableStateOf("") }
-
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     Box(
@@ -122,7 +119,7 @@ fun LoginView(
                     onClick = {
                         scope.launch {
                             isLoading = true
-                            when (val result = loginUser(email, password)) {
+                            when (val result = loginUser(email, password, context)) {
                                 is LoginResult.Success -> {
                                     token = result.token
                                     showSuccessDialog = true
@@ -182,8 +179,8 @@ fun LoginView(
                     Button(
                         onClick = {
                             showSuccessDialog = false
-                            navController.navigate("login") {
-                                popUpTo("register") { inclusive = true }
+                            navController.navigate("listarSalas") {
+                                popUpTo("login") { inclusive = true }
                             }
                         }
                     ) {
@@ -232,7 +229,7 @@ fun SuccessDialogLogin(navController: NavController, onDismiss: () -> Unit) {
             Button(
                 onClick = {
                     onDismiss()
-                    navController.navigate("login") {
+                    navController.navigate("listarSala") {
                         popUpTo("register") { inclusive = true }
                     }
                 }

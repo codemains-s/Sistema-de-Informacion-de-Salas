@@ -1,6 +1,7 @@
 package com.example.sis.endpoints
 
-import com.example.sis.datamodels.Room
+import com.example.sis.datamodels.room.Room
+import com.example.sis.datamodels.room.RoomCreate
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -12,11 +13,10 @@ interface Room_api {
         @Body room: Room
     ): Room
 
-    @GET("/all_room")
-    suspend fun allRoom(): Room
+    @GET("/all_rooms/")
+    suspend fun get_rooms(): List<RoomCreate>
 
-    @GET("/room/{id}")
-    suspend fun getRoomId(
-        @Path("id") id: Int
-    )
+    @GET("/room_by_name/")
+    suspend fun get_room_by_name(name: String):Room
+
 }

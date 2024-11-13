@@ -1,4 +1,4 @@
-package com.example.sis.datamodels
+package com.example.sis.datamodels.room
 
 data class Room(
     val id: Int,

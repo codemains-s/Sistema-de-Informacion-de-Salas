@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,19 +19,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.example.sis.R
+import com.example.sis.logic.logicRoom.RoomResult
 import com.example.sis.ui.theme.SISTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListarSalaView() {
+fun ListarSalaView(
+    navController: NavController,
+    viewModel: RoomViewModel = viewModel()
+) {
+    val roomResult by viewModel.roomResult
 
     val (searchText, setSearchText) = remember { mutableStateOf("") }
     val allSalas = listOf("Sala J", "Sala I", "Sala L", "Sala F", "Sala 218")
     val (filteredSalas, setFilteredSalas) = remember { mutableStateOf(allSalas) }
+    LaunchedEffect(Unit) {
+        viewModel.fetchRooms()
+    }
 
     Scaffold(
         topBar = {
@@ -40,7 +53,7 @@ fun ListarSalaView() {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.register),
+                            painter = painterResource(id = R.drawable.login),
                             contentDescription = "Logo Universidad",
                             modifier = Modifier.size(40.dp)
                         )
@@ -74,27 +87,27 @@ fun ListarSalaView() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        painter = painterResource(id = R.drawable.home),
                         contentDescription = "Home",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        painter = painterResource(id = R.drawable.schedule),
                         contentDescription = "Schedule",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.ucaldas_fondo2),
+                        painter = painterResource(id = R.drawable.notification),
                         contentDescription = "Notifications",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.ucaldas_fondo1),
+                        painter = painterResource(id = R.drawable.account),
                         contentDescription = "Profile",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background), // Icono extra
+                        painter = painterResource(id = R.drawable.setting), // Icono extra
                         contentDescription = "Settings",
                         modifier = Modifier.size(40.dp)
                     )
@@ -157,54 +170,76 @@ fun ListarSalaView() {
                 }
             }
 
-            // Lista de resultados
-            filteredSalas.forEach { sala ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFF2C663)
-                    )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.register),
-                            contentDescription = "Imagen de la sala",
-                            modifier = Modifier.size(40.dp)
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column {
-                            Text(
-                                text = sala,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
+            // Mostrar las salas filtradas
+            when (roomResult) {
+                is RoomResult.Success -> {
+                    val rooms = (roomResult as RoomResult.Success).rooms
+                    rooms.forEach { room ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFF2C663)
                             )
-                            Text(
-                                text = "Información de la sala...",
-                                fontSize = 14.sp,
-                                color = Color.Black
-                            )
-                            Text(
-                                text = "Otra línea de información..",
-                                fontSize = 14.sp,
-                                color = Color.Black
-                            )
-                            Text(
-                                text = "Otra línea de información..",
-                                fontSize = 14.sp,
-                                color = Color.Black
-                            )
+                        ) {
+                            Row (
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    val img = rememberAsyncImagePainter(room.image)
+                                    Image(
+                                        painter = img,
+                                        contentDescription = "Imagen de la sala",
+                                        modifier = Modifier.size(60.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Column {
+                                        Text(
+                                            text = room.name,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = room.description ?: "Sin descripción",
+                                            fontSize = 14.sp,
+                                            color = Color.Black
+                                        )
+                                    }
+                                }
+                                Button(
+                                    onClick = { /* Acción de reserva */ },
+                                    modifier = Modifier
+                                        .height(40.dp)
+                                        .padding(start = 8.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF0A5795),
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text(text = "Reservar")
+                                }
+
+                            }
                         }
                     }
+                }
+                is RoomResult.Error -> {
+                    Text(
+                        text = (roomResult as RoomResult.Error).message,
+                        color = Color.Red,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
             }
         }
     }
-
 }
 
 private fun filterSalas(
@@ -220,13 +255,4 @@ private fun filterSalas(
         }
     }
     setFilteredSalas(filteredSalas)
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun Screen() {
-    SISTheme {
-        ListarSalaView()
-    }
 }

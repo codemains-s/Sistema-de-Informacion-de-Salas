@@ -25,6 +25,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sis.logic.user.logicUser.loginUser
 import com.example.sis.logic.user.logicUser.registerUser
 import com.example.sis.ui.theme.SISTheme
+import com.example.sis.views.HoraryRegisterView
+import com.example.sis.views.ListarSalaView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
 
@@ -42,6 +44,7 @@ class MainActivity : ComponentActivity() {
                     composable("register") {
                         RegisterView(navController = navController)
                     }
+                    composable("listarSalas"){ ListarSalaView(navController) }
                 }
             }
         }
