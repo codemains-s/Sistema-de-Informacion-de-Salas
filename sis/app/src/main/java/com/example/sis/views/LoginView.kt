@@ -1,8 +1,10 @@
 package com.example.sis.views
 
+import androidx.compose.animation.VectorConverter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,37 +18,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-
 import com.example.sis.R
 import com.example.sis.logic.user.logicUser.LoginResult
-import com.example.sis.logic.user.logicUser.RegisterResult
-import com.example.sis.logic.user.logicUser.registerUser
+import com.example.sis.logic.user.logicUser.loginUser
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
-fun RegisterView(
+fun LoginView(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var birthdate by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var code by remember { mutableStateOf("") }
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    var token by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF2196F3))  // Fondo azul
+            .background(Color(0xFF2196F3))
     ) {
-        // Imagen de fondo
         Image(
             painter = painterResource(id = R.drawable.ucaldas_fondo2),
             contentDescription = "Fondo de registro",
@@ -57,16 +55,14 @@ fun RegisterView(
             alpha = 0.3f
         )
 
-        // Contenedor principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .zIndex(2f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Text(
-                text = "Register in SIS",
+                text = "Login to SIS",
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
                     .padding(top = 40.dp, bottom = 20.dp)
@@ -75,7 +71,6 @@ fun RegisterView(
                 color = Color.White
             )
 
-            // Formulario
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -90,8 +85,9 @@ fun RegisterView(
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent
                 )
+
                 Image(
-                    painter = painterResource(id = R.drawable.register),
+                    painter = painterResource(id = R.drawable.login),
                     contentDescription = "Fondo de registro",
                     modifier = Modifier
                         .height(150.dp)
@@ -100,39 +96,13 @@ fun RegisterView(
                 )
 
                 OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Name") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = textFieldShape,
-                    colors = textFieldColors
-                )
-
-                OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = textFieldShape,
-                    colors = textFieldColors
-                )
-
-                OutlinedTextField(
-                    value = birthdate,
-                    onValueChange = { birthdate = it },
-                    label = { Text("Birthday (yyyy-MM-dd)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = textFieldShape,
-                    colors = textFieldColors
-                )
-
-                OutlinedTextField(
-                    value = phone,
-                    onValueChange = { phone = it },
-                    label = { Text("Phone") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = textFieldShape,
-                    colors = textFieldColors
+                    colors = textFieldColors,
+                    enabled = !isLoading
                 )
 
                 OutlinedTextField(
@@ -142,40 +112,33 @@ fun RegisterView(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
                     shape = textFieldShape,
-                    colors = textFieldColors
-                )
-
-                OutlinedTextField(
-                    value = code,
-                    onValueChange = { code = it },
-                    label = { Text("code of admin") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = textFieldShape,
-                    colors = textFieldColors
+                    colors = textFieldColors,
+                    enabled = !isLoading
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
                     onClick = {
-                       scope.launch {
-                           isLoading = true
-                           when (val result = registerUser(name, email, birthdate, phone, password, code)){
-                               is RegisterResult.Success -> {
-                                   showSuccessDialog = true
-                               }
-                               is RegisterResult.Error -> {
-                                   errorMessage = when (result.message) {
-                                       "User exist" -> "User already exist"
-                                       "Email incorrect" -> "Email not valid"
-                                       "Password incorect" -> "Password not valid"
-                                       else -> result.message
-                                   }
-                                   showErrorDialog = true
-                               }
-                           }
-                           isLoading = false
-                       }
+                        scope.launch {
+                            isLoading = true
+                            when (val result = loginUser(email, password)) {
+                                is LoginResult.Success -> {
+                                    token = result.token
+                                    showSuccessDialog = true
+                                }
+                                is LoginResult.Error -> {
+                                    errorMessage = when (result.message) {
+                                        "User not exist" -> "El usuario no existe"
+                                        "Password incorrect" -> "La contraseña es incorrecta"
+                                        "Token not exist" -> "Error al generar el token"
+                                        else -> result.message
+                                    }
+                                    showErrorDialog = true
+                                }
+                            }
+                            isLoading = false
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -193,21 +156,26 @@ fun RegisterView(
                         )
                     } else {
                         Text(
-                            "Register",
+                            "Login",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
                 }
             }
         }
+
         if (showSuccessDialog) {
             AlertDialog(
                 onDismissRequest = { showSuccessDialog = false },
-                title = { Text(text = "Registro exitoso") },
+                title = { Text(text = "Inicio de sesión exitoso") },
                 text = {
                     Column {
-                        Text("Te Has Registrado sesión correctamente")
-
+                        Text("Has iniciado sesión correctamente")
+                        Text(
+                            text = "Token: ${token.take(20)}...",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
                     }
                 },
                 confirmButton = {
@@ -219,15 +187,16 @@ fun RegisterView(
                             }
                         }
                     ) {
-                        Text("Login")
+                        Text("Continuar")
                     }
                 }
             )
         }
+
         if (showErrorDialog) {
             AlertDialog(
                 onDismissRequest = { showErrorDialog = false },
-                title = { Text(text = "Error al registrarse") },
+                title = { Text(text = "Error de inicio de sesión") },
                 text = { Text(text = errorMessage) },
                 confirmButton = {
                     Button(onClick = { showErrorDialog = false }) {
@@ -240,11 +209,25 @@ fun RegisterView(
 }
 
 @Composable
-fun SuccessDialog(navController: NavController, onDismiss: () -> Unit) {
+fun ErrorDialogLogin(message: String, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "successful registration in SIS") },
-        text = { Text(text = "Your registration has been completed successfully.") },
+        title = { Text(text = "Error") },
+        text = { Text(text = message) },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("OK")
+            }
+        }
+    )
+}
+
+@Composable
+fun SuccessDialogLogin(navController: NavController, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "successful login") },
+        text = { Text(text = "you have logged in successfully") },
         confirmButton = {
             Button(
                 onClick = {
@@ -254,7 +237,7 @@ fun SuccessDialog(navController: NavController, onDismiss: () -> Unit) {
                     }
                 }
             ) {
-                Text("Go to login")
+                Text("Continue")
             }
         }
     )

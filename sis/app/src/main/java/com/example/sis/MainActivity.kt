@@ -21,9 +21,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.sis.ui.theme.LoginScreen
+import com.example.sis.logic.user.logicUser.loginUser
+import com.example.sis.logic.user.logicUser.registerUser
 import com.example.sis.ui.theme.SISTheme
 import com.example.sis.views.RegisterView
+import com.example.sis.views.LoginView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,11 +35,11 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "main") {
                     composable("main") { MainScreen(navController) }
-                    composable("login") { LoginScreen() }
+                    composable("login") {
+                        LoginView(navController = navController)
+                    }
                     composable("register") {
-                        RegisterView(onRegister = { name, email, birthday, phone, password ->
-                            // Aquí puedes manejar la lógica de registro
-                        })
+                        RegisterView(navController = navController)
                     }
                 }
             }
@@ -50,9 +52,8 @@ fun MainScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF2196F3))  // Fondo azul
+            .background(Color(0xFF2196F3))
     ) {
-        // Imagen de fondo
         Image(
             painter = painterResource(id = R.drawable.ucaldas_fondo2),
             contentDescription = "Fondo principal",
@@ -63,7 +64,6 @@ fun MainScreen(navController: NavController) {
             alpha = 0.3f
         )
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,7 +72,6 @@ fun MainScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Texto de bienvenida
             Text(
                 text = "Welcome to SIS",
                 style = MaterialTheme.typography.headlineLarge,
@@ -81,7 +80,6 @@ fun MainScreen(navController: NavController) {
                 modifier = Modifier.padding(bottom = 48.dp)
             )
 
-            // Botones con estilo mejorado
             Button(
                 onClick = { navController.navigate("register") },
                 modifier = Modifier
@@ -128,7 +126,6 @@ fun MainScreen(navController: NavController) {
                 )
             }
 
-            // Información adicional o texto de copyright
             Text(
                 text = "© 2024 SIS. All rights reserved.",
                 style = MaterialTheme.typography.bodySmall,

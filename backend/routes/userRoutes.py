@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from schemas.user import User, UserCreate, UserOut, UserUpdate
+from schemas.user import User, UserCreate, UserOut, UserUpdate, UserLogin
 from config.db import get_db
 from sqlalchemy.orm import Session
 from controllers.emailController import send_welcome_email
@@ -19,7 +19,10 @@ async def register(new_user: UserCreate, db: Session=Depends(get_db), code: str 
     validate_password(new_user.password)
     if exist_user(new_user.email, db):
         raise HTTPException(status_code=400, detail="User already exist")
-    
+    if not email_validation(new_user.email):
+        raise HTTPException(status_code=400, detail="Email not valid")
+    if not validate_password(new_user.password):
+        raise HTTPException(status_code=400, detail="Password not valid")
     await send_welcome_email(new_user.email, new_user.name, Request)
     token = create_user(new_user, code, db)
     return {"message": "User created successfully"}
@@ -27,16 +30,17 @@ async def register(new_user: UserCreate, db: Session=Depends(get_db), code: str 
 # Login
 
 @router.post("/login_user/")
-def login(email: str, password: str, db: Session = Depends(get_db)):
-    email_validation(email)
-    usr = exist_user(email, db)
+def login(request: UserLogin, db: Session = Depends(get_db)):
+    email_validation(request.email)
+    usr = exist_user(request.email, db)
     if not usr:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not exist")
-    if not password_context.verify(password, usr.password):
+    if not password_context.verify(request.password, usr.password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password incorrect")
-    token = exist_token(email, password, db)
+    token = exist_token(request.email, request.password, db)
     if not token:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token not exist")
+    
     return {"Token": token}
 
 

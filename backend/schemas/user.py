@@ -7,6 +7,10 @@ class User(BaseModel):
     birthdate : date
     phone : str
 
+class UserLogin(BaseModel):
+    email : str
+    password : str
+
 class UserCreate(User):
     password : str
 
