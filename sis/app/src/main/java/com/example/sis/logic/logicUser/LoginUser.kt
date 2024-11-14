@@ -19,7 +19,9 @@ suspend fun loginUser(email: String, password: String): LoginResult {
             val userLogin = UserLogin(email, password)
             val response = ApiService.userApi.loginUser(userLogin)
             if (response != null) {
+                ApiService.setAuthToken(response.Token)
                 LoginResult.Success(response.Token)
+
             } else {
                 LoginResult.Error("Error desconocido en el inicio de sesión")
             }

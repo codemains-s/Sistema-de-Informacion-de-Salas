@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.sis.R
+import com.example.sis.conexion_api.ApiService
 import com.example.sis.logic.user.logicUser.LoginResult
 import com.example.sis.logic.user.logicUser.loginUser
 import kotlinx.coroutines.launch
@@ -126,6 +127,7 @@ fun LoginView(
                                 is LoginResult.Success -> {
                                     token = result.token
                                     showSuccessDialog = true
+                                    ApiService.setAuthToken(result.token)
                                 }
                                 is LoginResult.Error -> {
                                     errorMessage = when (result.message) {

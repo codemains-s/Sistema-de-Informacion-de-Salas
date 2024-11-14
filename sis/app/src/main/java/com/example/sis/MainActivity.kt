@@ -1,6 +1,7 @@
 package com.example.sis
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -25,6 +26,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sis.logic.user.logicUser.loginUser
 import com.example.sis.logic.user.logicUser.registerUser
 import com.example.sis.ui.theme.SISTheme
+import com.example.sis.views.DetalleSalaView
+import com.example.sis.views.ListarSalaView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
 
@@ -42,7 +45,16 @@ class MainActivity : ComponentActivity() {
                     composable("register") {
                         RegisterView(navController = navController)
                     }
-                }
+                    composable("roomlist") {
+                        ListarSalaView(navController = navController)
+                    }
+                    composable("detalleSala/{salaId}") { backStackEntry ->
+                        val salaId = backStackEntry.arguments?.getString("salaId")
+                        if (salaId != null) {
+                            DetalleSalaView(salaId, navController)
+                        }
+                    }
+                     }
             }
         }
     }
@@ -132,6 +144,31 @@ fun MainScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Login",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { navController.navigate("roomlist") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(horizontal = 32.dp),
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFF2196F3)
+                ),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 6.dp,
+                    pressedElevation = 8.dp
+                )
+            ) {
+                Text(
+                    text = "Listado de salas",
                     style = MaterialTheme.typography.titleLarge
                 )
             }
