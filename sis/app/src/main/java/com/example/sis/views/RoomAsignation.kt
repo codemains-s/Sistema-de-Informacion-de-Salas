@@ -40,7 +40,7 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 fun HoraryRegisterView(
     navController: NavController,
-    salaName: String,
+    salaId: Int,
     userId: Int,
 ) {
     // Variables de estado para las cajas de texto
@@ -287,6 +287,8 @@ fun HoraryRegisterView(
                                 scope.launch {
                                     isLoading = true
                                     when (val result = registerBooking(
+                                        user_id = userId,
+                                        sala_id = salaId,
                                         booking_date = selectedDate,
                                         start_time = horaInicio,
                                         end_time = horaFin,
@@ -318,6 +320,18 @@ fun HoraryRegisterView(
                     }
                 }
             }
+        }
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text(text = "Error al registrarse") },
+                text = { Text(text = errorMessage) },
+                confirmButton = {
+                    Button(onClick = { showErrorDialog = false }) {
+                        Text("Aceptar")
+                    }
+                }
+            )
         }
     }
 }

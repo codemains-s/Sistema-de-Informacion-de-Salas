@@ -13,10 +13,10 @@ sealed class RegisterBookingResult {
     data class Error(val message: String) : RegisterBookingResult()
 }
 
-suspend fun registerBooking(booking_date: String, start_time: String, end_time: String, status: String):RegisterBookingResult {
+suspend fun registerBooking(sala_id: Int, user_id: Int, booking_date: String, start_time: String, end_time: String, status: String):RegisterBookingResult {
     return withContext(Dispatchers.IO){
         try {
-            val newRoomBooking = RoomBooking(booking_date, start_time, end_time, status)
+            val newRoomBooking = RoomBooking(sala_id, user_id, booking_date, start_time, end_time, status)
             val response = ApiService.roomBookingApi.newRoomBooking(newRoomBooking)
             if (response != null) {
                 RegisterBookingResult.Success("Registro exitoso")
