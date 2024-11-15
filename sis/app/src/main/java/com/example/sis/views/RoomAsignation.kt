@@ -40,7 +40,7 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 fun HoraryRegisterView(
     navController: NavController,
-    salaId: Int,
+    roomId: Int,
     userId: Int,
 ) {
     // Variables de estado para las cajas de texto
@@ -288,7 +288,7 @@ fun HoraryRegisterView(
                                     isLoading = true
                                     when (val result = registerBooking(
                                         user_id = userId,
-                                        sala_id = salaId,
+                                        room_id = roomId,
                                         booking_date = selectedDate,
                                         start_time = horaInicio,
                                         end_time = horaFin,
