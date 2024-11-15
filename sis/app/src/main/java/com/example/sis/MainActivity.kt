@@ -29,6 +29,7 @@ import com.example.sis.views.HoraryRegisterView
 import com.example.sis.views.ListarSalaView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
+import com.example.sis.views.RegistrarHorasView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
