@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from schemas.user import User, UserCreate, UserOut, UserUpdate, UserLogin
+from schemas.user import User, UserCreate, UserOut, UserUpdate, UserLogin, UserEdit
 from config.db import get_db
 from sqlalchemy.orm import Session
 from controllers.emailController import send_welcome_email
@@ -68,7 +68,7 @@ def delete_users(user_id: int, db: Session = Depends(get_db)):
 
 # update user
 @router.put("/update_user/{user_id}", dependencies=[Depends(Portador())])
-def update_user_by_id(user_id: int, user: User, db: Session = Depends(get_db)):
+def update_user_by_id(user_id: int, user: UserEdit, db: Session = Depends(get_db)):
     user_updated = update_user(user_id, user, db)
     if not user_updated:
         return {"message": "User not exist"}
