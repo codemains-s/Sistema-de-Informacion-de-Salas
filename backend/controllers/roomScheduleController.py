@@ -1,4 +1,4 @@
-from schemas.roomSchedules import RoomSchedule
+from schemas.roomSchedule import RoomSchedule
 from models.tables import *
 from sqlalchemy import func, text
 
@@ -22,9 +22,9 @@ def get_room_schedule_by_room_id(room_id: int, db):
 def update_room_schedule(id_room_schedule:int, updated_room_schedule: RoomSchedule, db):
     db_room_schedule = db.query(RoomSchedule).filter(RoomSchedule.id == id_room_schedule).first()
     db_room_schedule.room_id = updated_room_schedule.room_id
-    db_room_schedule.schedule_id = updated_room_schedule.schedule_id
-    db_room_schedule.date = updated_room_schedule.date
-    db_room_schedule.hour = updated_room_schedule.hour
+    db_room_schedule.hour_start = updated_room_schedule.hour_start
+    db_room_schedule.hour_end = updated_room_schedule.hour_end
+    db_room_schedule.day_of_week = updated_room_schedule.day_of_week
     db.commit()
     db.refresh(db_room_schedule)
     return db_room_schedule

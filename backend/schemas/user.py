@@ -16,15 +16,16 @@ class UserCreate(User):
 
 class UserUpdate(User):
     role_id : int
+    token : str
+    program_id : int
+    
 
 class UserEdit(User):
-    role_id : int
-    token : str
+    role_id: int
+    program_id : int
 
 
 class UserOut(User):
     id: int
     token : str
-    role_id: int
-    
     

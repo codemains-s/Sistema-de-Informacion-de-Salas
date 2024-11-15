@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from schemas.roomSchedules import RoomSchedule, RoomScheduleOut
+from schemas.roomSchedule import RoomSchedule, RoomScheduleOut
 from config.db import get_db
 from sqlalchemy.orm import Session
 from security.seguridad import Portador
