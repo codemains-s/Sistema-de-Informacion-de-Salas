@@ -1,0 +1,14 @@
+{
+    "version":2,
+    "build":{
+        "env":{
+            "Sistema_SIS":"backend/main:app"
+        }
+    },
+    "routes":[
+        {
+            "src":"/.*",
+            "dest":"backend/main:app"
+        }
+    ]
+}
