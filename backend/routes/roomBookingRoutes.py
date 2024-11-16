@@ -8,7 +8,7 @@ from controllers.roomBookingController import (create_room_booking, all_room_boo
 
 router = APIRouter()
 
-@router.post("/new_roomBooking/", dependencies=[Depends(Portador())])
+@router.post("/new_roomBooking/")
 def new_roomBooking(room_booking: RoomBooking, db: Session = Depends(get_db)):
     return create_room_booking(room_booking, db)
 

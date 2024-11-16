@@ -61,7 +61,7 @@ class RoomBooking(Base): # Listo ---------------------------------------------
     
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    Room_id = Column(Integer, ForeignKey('rooms.id'), nullable=False)
+    room_id = Column(Integer, ForeignKey('rooms.id'), nullable=False)
     start_time = Column(String(100), nullable=False)
     end_time = Column(String(100), nullable=False)
     status = Column(String(100))
