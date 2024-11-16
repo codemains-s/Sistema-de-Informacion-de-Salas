@@ -17,7 +17,12 @@ def get_room_by_id(id, db):
     return db.query(Room).filter(Room.id == id).first()
 
 def get_room_by_name(name: str, db):
-    return db.query(Room).filter(Room.name == name).first()
+    if not name.strip():  # Verifica si el nombre está vacío o contiene solo espacios
+        return "Se debe de ingresar el nombre de la sala"
+    room = db.query(Room).filter(func.upper(Room.name) == name.upper()).first()
+    if room:
+        return "Sala encontrada"
+    return "Sala ingresada no existe"
 
 def update_room(id_room: int, updated_room: Room, db)->Optional[Room]:
     db_room = db.query(Room).filter(Room.id == id_room).first()
