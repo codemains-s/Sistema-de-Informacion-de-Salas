@@ -88,7 +88,7 @@ class CompletedHours(Base):
     __tablename__ = 'completed_hours'
     
     id = Column(Integer, primary_key=True)
-    id_room_booking = Column(Integer, ForeignKey('room_bookings.id'), nullable=False)
+    room_booking_id = Column(Integer, ForeignKey('room_bookings.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     hour_completed = Column(Integer)
     date_register = Column(String(100), default=datetime.utcnow)
