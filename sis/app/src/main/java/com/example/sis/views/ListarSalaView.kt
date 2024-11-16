@@ -15,10 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,58 +33,56 @@ import com.example.sis.datamodels.Room
 =======
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.sis.R
-import com.example.sis.logic.logicRoom.RoomResult
->>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
-import com.example.sis.ui.theme.SISTheme
+import com.example.sis.datamodels.room.Room
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalContext
+import com.example.sis.logic.logicRoom.RoomResult
+import com.example.sis.logic.logicRoom.roomList
+import com.example.sis.logic.logicUser.TokenManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListarSalaView(
     navController: NavController,
-<<<<<<< HEAD
     modifier: Modifier = Modifier
 ) {
-    val (searchText, setSearchText) = remember { mutableStateOf("") } // Texto del buscador
-    var allSalas by remember { mutableStateOf<List<Room>>(emptyList()) } // Lista de salas
-    var filteredSalas by remember { mutableStateOf<List<Room>>(emptyList()) } // Lista filtrada
-    var isLoading by remember { mutableStateOf(true) } // Estado de carga
-    var errorMessage by remember { mutableStateOf<String?>(null) } // Mensaje de error
+    val (searchText, setSearchText) = remember { mutableStateOf("") }
+    var allSalas by remember { mutableStateOf<List<Room>>(emptyList()) }
+    var filteredSalas by remember { mutableStateOf<List<Room>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val coroutineScope = rememberCoroutineScope()
 
-    // Obtener las salas desde la API
+    val context = LocalContext.current
+    val tokenManager = TokenManager(context)
+    val token = tokenManager.getToken() ?: ""
+
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             try {
                 isLoading = true
                 errorMessage = null
-                Log.d("API_REQUEST", "Enviando solicitud a ${ApiService.roomApi.allRoom()}")
-                allSalas = ApiService.roomApi.allRoom() // Llamada a la API
 
+                val result = roomList(context)
+                when (result) {
+                    is RoomResult.Success -> {
+                        allSalas = result.rooms
+                        filteredSalas = allSalas
+                    }
+                    is RoomResult.Error -> {
+                        errorMessage = result.message
+                    }
+                }
 
-                filteredSalas = allSalas // Inicializar con todos los datos
             } catch (e: Exception) {
                 errorMessage = "Error al cargar las salas: ${e.message}"
             } finally {
                 isLoading = false
             }
         }
-=======
-    viewModel: RoomViewModel = viewModel()
-) {
-    val roomResult by viewModel.roomResult
-
-    val (searchText, setSearchText) = remember { mutableStateOf("") }
-    val allSalas = listOf("Sala J", "Sala I", "Sala L", "Sala F", "Sala 218")
-    val (filteredSalas, setFilteredSalas) = remember { mutableStateOf(allSalas) }
-    LaunchedEffect(Unit) {
-        viewModel.fetchRooms()
->>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
     }
 
     Scaffold(
@@ -92,23 +91,18 @@ fun ListarSalaView(
                 title = {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically, // Centrar elementos verticalmente
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         // Logo de la Universidad (Imagen más grande)
                         Image(
-<<<<<<< HEAD
                             painter = painterResource(id = R.drawable.logo_blanco_ucaldas_recortado),
-=======
-                            painter = painterResource(id = R.drawable.login),
->>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
                             contentDescription = "Logo Universidad",
                             modifier = Modifier
-                                .size(250.dp) // Aumenta el tamaño de la imagen
-                                .weight(1f, fill = false) // Asegúrate de que no ocupe más espacio del necesario
+                                .size(250.dp)
+                                .weight(1f, fill = false)
                         )
 
-                        // Texto (SIS)
                         Text(
                             text = "SIS",
                             color = Color.White,
@@ -117,7 +111,7 @@ fun ListarSalaView(
                             textAlign = TextAlign.End,
                             modifier = Modifier
                                 .padding(end = 16.dp)
-                                .weight(1f, fill = false) // Evita que el texto se deforme
+                                .weight(1f, fill = false)
                         )
                     }
                 },
@@ -135,27 +129,27 @@ fun ListarSalaView(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.home),
+                        painter = painterResource(id = R.drawable.ic_launcher_background),
                         contentDescription = "Home",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.schedule),
+                        painter = painterResource(id = R.drawable.ic_launcher_background),
                         contentDescription = "Schedule",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.notification),
+                        painter = painterResource(id = R.drawable.ucaldas_fondo2),
                         contentDescription = "Notifications",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.account),
+                        painter = painterResource(id = R.drawable.ucaldas_fondo1),
                         contentDescription = "Profile",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.setting), // Icono extra
+                        painter = painterResource(id = R.drawable.ic_launcher_background),
                         contentDescription = "Settings",
                         modifier = Modifier.size(40.dp)
                     )
@@ -172,7 +166,6 @@ fun ListarSalaView(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Mostrar estado de carga o error
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             } else if (errorMessage != null) {
@@ -182,9 +175,7 @@ fun ListarSalaView(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
                 )
-<<<<<<< HEAD
             } else {
-                // Buscador
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -211,15 +202,15 @@ fun ListarSalaView(
                             colors = TextFieldDefaults.textFieldColors(
                                 containerColor = Color(0xFFD9D9D9),
                                 focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
+                                unfocusedIndicatorColor = Color.Transparent,
                             ),
+                            textStyle = LocalTextStyle.current.copy(color = Color.Black),
                             shape = RoundedCornerShape(12.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
-                            onClick = { // Filtrar al hacer clic
-                                // Restablecer filteredSalas a allSalas antes de filtrar
-                                filteredSalas = allSalas // Asegúrate de que tengas todas las salas disponibles
+                            onClick = {
+                                filteredSalas = allSalas
                                 filterSalas(searchText, allSalas, setFilteredSalas = {
                                     filteredSalas = it
                                 })
@@ -235,15 +226,13 @@ fun ListarSalaView(
                     }
                 }
 
-                // Lista de resultados
                 filteredSalas.forEach { sala ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                             .clickable {
-                                // Navegar a la vista de detalles de la sala
-                                navController.navigate("detalleSala/${sala.id}") // Asumiendo que `sala.id` es único
+                                navController.navigate("detalleSala/${sala.id}")
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = Color(0xFFF2C663)
@@ -270,113 +259,9 @@ fun ListarSalaView(
                                     fontSize = 14.sp,
                                     color = Color.Black
                                 )
-=======
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    TextField(
-                        value = searchText,
-                        onValueChange = { newText ->
-                            setSearchText(newText)
-                            filterSalas(newText, allSalas, setFilteredSalas)
-                        },
-                        placeholder = { Text(text = "ej: sala j") },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(48.dp),
-                        singleLine = true,
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color(0xff888888),
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        onClick = { /* Acción del botón de buscar */ },
-                        modifier = Modifier.height(48.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF0A5795),
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Buscar")
-                    }
-                }
-            }
-
-            // Mostrar las salas filtradas
-            when (roomResult) {
-                is RoomResult.Success -> {
-                    val rooms = (roomResult as RoomResult.Success).rooms
-                    rooms.forEach { room ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color(0xFFF2C663)
-                            )
-                        ) {
-                            Row (
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(16.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    val img = rememberAsyncImagePainter(room.image)
-                                    Image(
-                                        painter = img,
-                                        contentDescription = "Imagen de la sala",
-                                        modifier = Modifier.size(60.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Column {
-                                        Text(
-                                            text = room.name,
-                                            fontSize = 18.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = room.description ?: "Sin descripción",
-                                            fontSize = 14.sp,
-                                            color = Color.Black
-                                        )
-                                    }
-                                }
-                                Button(
-                                    onClick = { /* Acción de reserva */ },
-                                    modifier = Modifier
-                                        .height(40.dp)
-                                        .padding(start = 8.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF0A5795),
-                                        contentColor = Color.White
-                                    )
-                                ) {
-                                    Text(text = "Reservar")
-                                }
-
->>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
                             }
                         }
                     }
-                }
-                is RoomResult.Error -> {
-                    Text(
-                        text = (roomResult as RoomResult.Error).message,
-                        color = Color.Red,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(16.dp)
-                    )
                 }
             }
         }
@@ -397,8 +282,3 @@ private fun filterSalas(
     }
     setFilteredSalas(filteredSalas)
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f

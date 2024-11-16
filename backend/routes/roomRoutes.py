@@ -27,7 +27,7 @@ def create_new_room(room: Room, db: Session = Depends(get_db)):
 
 
 # Get all rooms
-@router.get("/all_rooms/")
+@router.get("/all_rooms/", dependencies=[Depends(Portador())])
 def get_all_rooms(db: Session = Depends(get_db)):
     rooms = all_rooms(db)
     return rooms

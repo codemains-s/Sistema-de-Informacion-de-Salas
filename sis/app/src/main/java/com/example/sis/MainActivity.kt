@@ -26,9 +26,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sis.logic.user.logicUser.loginUser
 import com.example.sis.logic.user.logicUser.registerUser
 import com.example.sis.ui.theme.SISTheme
-<<<<<<< HEAD
+
 import com.example.sis.views.DetalleSalaView
-=======
 import com.example.sis.views.HoraryRegisterView
 >>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
 import com.example.sis.views.ListarSalaView
@@ -50,19 +49,7 @@ class MainActivity : ComponentActivity() {
                     composable("register") {
                         RegisterView(navController = navController)
                     }
-<<<<<<< HEAD
-                    composable("roomlist") {
-                        ListarSalaView(navController = navController)
-                    }
-                    composable("detalleSala/{salaId}") { backStackEntry ->
-                        val salaId = backStackEntry.arguments?.getString("salaId")
-                        if (salaId != null) {
-                            DetalleSalaView(salaId, navController)
-                        }
-                    }
-                     }
-=======
-                    composable("listarSalas"){ HoraryRegisterView(navController = navController, 1, 1) }
+                    composable("listarSalas"){ ListarSalaView(navController = navController) }
                 }
 >>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
             }
