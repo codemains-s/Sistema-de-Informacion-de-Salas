@@ -1,74 +1,104 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Float
 from sqlalchemy.orm import relationship
 from config.db import Base
+from datetime import datetime
 
-class User(Base):
+
+class Program(Base): # Listo ---------------------------------------------
+    __tablename__ = 'program'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(String(1023))
+    
+    # Relación uno a muchos con users
+    users = relationship('User', back_populates='program')
+
+class User(Base): # Listo ---------------------------------------------
     __tablename__ = 'users'
     
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(254))
-    email = Column(String(100))
-    password = Column(String(100))
-    token = Column(String(500))
-    birthdate = Column(Date)
+    id = Column(Integer, primary_key=True)
+    program_id = Column(Integer, ForeignKey('program.id'), nullable=False)
+    role_id = Column(Integer, ForeignKey('roles.id'), nullable=False)
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), nullable=False, unique=True)
+    password = Column(String(255), nullable=False)
+    token = Column(String(255))
+    birthdate = Column(String(100))
     phone = Column(String(20))
-    role_id = Column(Integer, ForeignKey('roles.id'))
     
-    role = relationship('Role', back_populates='users', uselist=False)
-    rooms = relationship('UserRoom', back_populates='user')
+    # Relaciones
+    program = relationship('Program', back_populates='users')
+    role = relationship('Role', back_populates='users')
+    room_bookings = relationship('RoomBooking', back_populates='user')
+    completed_hours = relationship('CompletedHours', back_populates='user')
 
-class Role(Base):
+class Role(Base): # Listo ---------------------------------------------
     __tablename__ = 'roles'
     
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100))
-    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False)
+ 
     users = relationship('User', back_populates='role', uselist=False)
 
-class Room(Base):
+class Room(Base): #Listo ---------------------------------------------
     __tablename__ = 'rooms'
     
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100))
-    address = Column(String(254))
-    description = Column(String(254))
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    address = Column(String(200))
+    description = Column(String(500))
     capacity = Column(Integer)
+    status = Column(String(50))
+    image = Column(String(255))
+    
+    # Relaciones
+    room_bookings = relationship('RoomBooking', back_populates='room')
+    room_schedules = relationship('RoomSchedule', back_populates='room')
+
+class RoomBooking(Base): # Listo ---------------------------------------------
+    __tablename__ = 'room_bookings'
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    room_id = Column(Integer, ForeignKey('rooms.id'), nullable=False)
+    start_time = Column(String(100), nullable=False)
+    end_time = Column(String(100), nullable=False)
     status = Column(String(100))
-    image = Column(String(500))
+    booking_date = Column(String(100), default=datetime.utcnow)
     
-    schedules = relationship('RoomSchedule', back_populates='room')
-    users = relationship('UserRoom', back_populates='room')
+    # Relaciones
+    user = relationship('User', back_populates='room_bookings')
+    room = relationship('Room', back_populates='room_bookings')
+    completed_hours = relationship('CompletedHours', back_populates='room_booking')
 
-class Schedule(Base):
-    __tablename__ = 'schedules'
+class RoomSchedule(Base): # Listo ---------------------------------------------
+    __tablename__ = 'room_schedule'
     
-    id = Column(Integer, primary_key=True, index=True)
-    day = Column(String(100))
-    start_time = Column(String(100))
-    end_time = Column(String(100))
+    id = Column(Integer, primary_key=True)
+    idRoom = Column(Integer, ForeignKey('rooms.id'), nullable=False)
+    hour_start = Column(String(50))  # Formato "HH:MM"
+    hour_end = Column(String(50))    # Formato "HH:MM"
+    dayOfWeek = Column(String(50))    # 1-7 para Lunes-Domingo
     
-    rooms = relationship('RoomSchedule', back_populates='schedule')
+    # Relación
+    room = relationship('Room', back_populates='room_schedules')
 
-class RoomSchedule(Base):
-    __tablename__ = 'roomschedule'
+class CompletedHours(Base):
+    __tablename__ = 'completed_hours'
     
-    id = Column(Integer, primary_key=True, index=True)
-    room_id = Column(Integer, ForeignKey('rooms.id'))
-    schedule_id = Column(Integer, ForeignKey('schedules.id'))
-    date = Column(String(100))
-    hour = Column(String(100))
+    id = Column(Integer, primary_key=True)
+    id_room_booking = Column(Integer, ForeignKey('room_bookings.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    hour_completed = Column(Integer)
+    date_register = Column(String(100), default=datetime.utcnow)
+    status = Column(String(50))
+    observations = Column(String(1023))
     
-    room = relationship('Room', back_populates='schedules')
-    schedule = relationship('Schedule', back_populates='rooms')
+    # Relaciones
+    room_booking = relationship('RoomBooking', back_populates='completed_hours')
+    user = relationship('User', back_populates='completed_hours')
 
-class UserRoom(Base):
-    __tablename__ = 'userrooms'
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    room_id = Column(Integer, ForeignKey('rooms.id'))
-    date = Column(String(100))
-    hour = Column(String(100))
-    
-    user = relationship('User', back_populates='rooms')
-    room = relationship('Room', back_populates='users')
+
+
+

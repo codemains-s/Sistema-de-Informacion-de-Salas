@@ -26,10 +26,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sis.logic.user.logicUser.loginUser
 import com.example.sis.logic.user.logicUser.registerUser
 import com.example.sis.ui.theme.SISTheme
+<<<<<<< HEAD
 import com.example.sis.views.DetalleSalaView
+=======
+import com.example.sis.views.HoraryRegisterView
+>>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
 import com.example.sis.views.ListarSalaView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
+import com.example.sis.views.RegistrarHorasView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,7 @@ class MainActivity : ComponentActivity() {
                     composable("register") {
                         RegisterView(navController = navController)
                     }
+<<<<<<< HEAD
                     composable("roomlist") {
                         ListarSalaView(navController = navController)
                     }
@@ -55,6 +61,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                      }
+=======
+                    composable("listarSalas"){ HoraryRegisterView(navController = navController, 1, 1) }
+                }
+>>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
             }
         }
     }

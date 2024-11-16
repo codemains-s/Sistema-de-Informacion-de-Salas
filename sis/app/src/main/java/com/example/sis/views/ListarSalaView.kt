@@ -22,13 +22,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+<<<<<<< HEAD
 import androidx.navigation.NavController
 import com.example.sis.R
 import com.example.sis.conexion_api.ApiService
 import com.example.sis.datamodels.Room
+=======
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import com.example.sis.R
+import com.example.sis.logic.logicRoom.RoomResult
+>>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
 import com.example.sis.ui.theme.SISTheme
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
@@ -37,6 +45,7 @@ import androidx.compose.foundation.clickable
 @Composable
 fun ListarSalaView(
     navController: NavController,
+<<<<<<< HEAD
     modifier: Modifier = Modifier
 ) {
     val (searchText, setSearchText) = remember { mutableStateOf("") } // Texto del buscador
@@ -64,6 +73,17 @@ fun ListarSalaView(
                 isLoading = false
             }
         }
+=======
+    viewModel: RoomViewModel = viewModel()
+) {
+    val roomResult by viewModel.roomResult
+
+    val (searchText, setSearchText) = remember { mutableStateOf("") }
+    val allSalas = listOf("Sala J", "Sala I", "Sala L", "Sala F", "Sala 218")
+    val (filteredSalas, setFilteredSalas) = remember { mutableStateOf(allSalas) }
+    LaunchedEffect(Unit) {
+        viewModel.fetchRooms()
+>>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
     }
 
     Scaffold(
@@ -77,7 +97,11 @@ fun ListarSalaView(
                     ) {
                         // Logo de la Universidad (Imagen más grande)
                         Image(
+<<<<<<< HEAD
                             painter = painterResource(id = R.drawable.logo_blanco_ucaldas_recortado),
+=======
+                            painter = painterResource(id = R.drawable.login),
+>>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
                             contentDescription = "Logo Universidad",
                             modifier = Modifier
                                 .size(250.dp) // Aumenta el tamaño de la imagen
@@ -111,27 +135,27 @@ fun ListarSalaView(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        painter = painterResource(id = R.drawable.home),
                         contentDescription = "Home",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        painter = painterResource(id = R.drawable.schedule),
                         contentDescription = "Schedule",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.ucaldas_fondo2),
+                        painter = painterResource(id = R.drawable.notification),
                         contentDescription = "Notifications",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.ucaldas_fondo1),
+                        painter = painterResource(id = R.drawable.account),
                         contentDescription = "Profile",
                         modifier = Modifier.size(40.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background), // Icono extra
+                        painter = painterResource(id = R.drawable.setting), // Icono extra
                         contentDescription = "Settings",
                         modifier = Modifier.size(40.dp)
                     )
@@ -158,6 +182,7 @@ fun ListarSalaView(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
                 )
+<<<<<<< HEAD
             } else {
                 // Buscador
                 Card(
@@ -245,9 +270,113 @@ fun ListarSalaView(
                                     fontSize = 14.sp,
                                     color = Color.Black
                                 )
+=======
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    TextField(
+                        value = searchText,
+                        onValueChange = { newText ->
+                            setSearchText(newText)
+                            filterSalas(newText, allSalas, setFilteredSalas)
+                        },
+                        placeholder = { Text(text = "ej: sala j") },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                        singleLine = true,
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color(0xff888888),
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = { /* Acción del botón de buscar */ },
+                        modifier = Modifier.height(48.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF0A5795),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(text = "Buscar")
+                    }
+                }
+            }
+
+            // Mostrar las salas filtradas
+            when (roomResult) {
+                is RoomResult.Success -> {
+                    val rooms = (roomResult as RoomResult.Success).rooms
+                    rooms.forEach { room ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFF2C663)
+                            )
+                        ) {
+                            Row (
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    val img = rememberAsyncImagePainter(room.image)
+                                    Image(
+                                        painter = img,
+                                        contentDescription = "Imagen de la sala",
+                                        modifier = Modifier.size(60.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Column {
+                                        Text(
+                                            text = room.name,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = room.description ?: "Sin descripción",
+                                            fontSize = 14.sp,
+                                            color = Color.Black
+                                        )
+                                    }
+                                }
+                                Button(
+                                    onClick = { /* Acción de reserva */ },
+                                    modifier = Modifier
+                                        .height(40.dp)
+                                        .padding(start = 8.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF0A5795),
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text(text = "Reservar")
+                                }
+
+>>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
                             }
                         }
                     }
+                }
+                is RoomResult.Error -> {
+                    Text(
+                        text = (roomResult as RoomResult.Error).message,
+                        color = Color.Red,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
             }
         }
@@ -268,5 +397,8 @@ private fun filterSalas(
     }
     setFilteredSalas(filteredSalas)
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f

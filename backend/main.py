@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from config.db import Base, engine
-from routes import userRoutes, roleRoutes, roomRoutes, scheduleRoutes, roomScheduleRoutes, userRoomsRoutes
+from routes import userRoutes, roleRoutes, roomRoutes, roomScheduleRoutes, completedHoursRoutes, programRoutes, roomBookingRoutes
 from fastapi.middleware.cors import CORSMiddleware
 
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="SIS", description="Sistema de asignación de salas a monitores", version="1.0.0")
 
@@ -17,12 +17,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(roleRoutes.router, tags=["Role"])
+
 app.include_router(userRoutes.router, tags=["User"])
+app.include_router(roleRoutes.router, tags=["Role"])
 app.include_router(roomRoutes.router, tags=["Room"])
-app.include_router(scheduleRoutes.router, tags=["Schedule"])
+app.include_router(roomBookingRoutes.router, tags=["RoomBooking"])
+app.include_router(completedHoursRoutes.router, tags=["CompletedHours"])
+app.include_router(programRoutes.router, tags=["Program"])
 app.include_router(roomScheduleRoutes.router, tags=["RoomSchedule"])
-app.include_router(userRoomsRoutes.router, tags=["UserRooms"])
 
 
 @app.get("/", tags=["Main"])

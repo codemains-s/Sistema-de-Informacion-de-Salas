@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
     <domain-config cleartextTrafficPermitted="true">
+<<<<<<< HEAD
         <domain includeSubdomains="true">192.168.1.22</domain>
+=======
+        <domain includeSubdomains="true">192.168.0.0/16</domain>
+>>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
     </domain-config>
 </network-security-config>

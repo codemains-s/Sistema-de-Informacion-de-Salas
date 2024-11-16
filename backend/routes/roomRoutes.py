@@ -17,7 +17,7 @@ router = APIRouter()
 
 
 # Create a new room
-@router.post("/new_room", dependencies=[Depends(Portador())])
+@router.post("/new_room/", dependencies=[Depends(Portador())])
 def create_new_room(room: Room, db: Session = Depends(get_db)):
     exist = exist_room(room.name, db)
     if exist:
@@ -27,7 +27,7 @@ def create_new_room(room: Room, db: Session = Depends(get_db)):
 
 
 # Get all rooms
-@router.get("/all_rooms", dependencies=[Depends(Portador())])
+@router.get("/all_rooms/")
 def get_all_rooms(db: Session = Depends(get_db)):
     rooms = all_rooms(db)
     return rooms
@@ -43,7 +43,7 @@ def get_room_by_id_endpoint(id: int, db: Session = Depends(get_db)):
 
 
 # Get room by name
-@router.get("/room_by_name", dependencies=[Depends(Portador())])
+@router.get("/room_by_name/", dependencies=[Depends(Portador())])
 def get_room_by_name_endpoint(name: str, db: Session = Depends(get_db)):
     room = get_room_by_name(name, db)
     if room is None:
@@ -52,7 +52,7 @@ def get_room_by_name_endpoint(name: str, db: Session = Depends(get_db)):
 
 
 # Update room
-@router.put("/update_room", dependencies=[Depends(Portador())])
+@router.put("/update_room/", dependencies=[Depends(Portador())])
 def update_room_endpoint(id: int, room: Room, db: Session = Depends(get_db)):
     updated_room = update_room(id, room, db)
     if updated_room is None:
@@ -61,7 +61,7 @@ def update_room_endpoint(id: int, room: Room, db: Session = Depends(get_db)):
 
 
 # Delete room
-@router.delete("/delete_room", dependencies=[Depends(Portador())])
+@router.delete("/delete_room/", dependencies=[Depends(Portador())])
 def delete_room_endpoint(id: int, db: Session = Depends(get_db)):
     room = delete_room(id, db)
     if room is None:

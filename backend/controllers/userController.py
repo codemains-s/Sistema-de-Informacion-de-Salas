@@ -1,4 +1,4 @@
-from schemas.user import UserCreate, UserOut, UserEdit
+from schemas.user import UserCreate, UserOut, UserEdit, UserUpdate
 from models.tables import User
 from controllers.roleController import get_role_by_name
 from sqlalchemy import func, text
@@ -46,9 +46,6 @@ def asign_role(code: str, db):
     else:
         role_id = get_role_by_name('Monitor', db)
     return role_id
-    
-    
-
 
 def validate_token(token: str)-> dict:
     secret_key = os.getenv('SECRET_KEY')
@@ -99,6 +96,12 @@ def exist_user(email: str, db):
         return False
     return user
 
+def exist_user_id(user_id: int, db):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return False
+    return user
+
 def get_user_by_id(user_id: int, db):
     user = db.query(User).filter(User.id == user_id).first()
     return user
@@ -111,16 +114,18 @@ def get_all_users(db):
     users = db.query(User).all()
     return users
 
-def update_user(user_id: int, update_user: UserEdit, db)->Optional[UserOut]:
-    usr = get_token_by_id(user_id, db)
+def update_user(user_id: int, update_user: UserUpdate, db)->Optional[UserOut]:
+    usr  = db.query(User).filter(User.id == user_id).first()
     secret_key = os.getenv('SECRET_KEY')
     algorithm = os.getenv('ALGORITHM')
     if usr:
-        payload = {'id': usr.id, 'email': usr.email, 'role_id': usr.role_id}
+        payload = {'id': user_id, 'email': update_user.email, 'role_id': update_user.role_id}
+        usr.program_id = update_user.program_id
+        usr.role_id = update_user.role_id
         usr.name = update_user.name
         usr.email = update_user.email
         usr.birthdate = update_user.birthdate
-        usr.role_id = update_user.role_id
+        usr.phone = update_user.phone
         usr.token = jwt.encode(payload, secret_key, algorithm)
         db.commit()
         db.refresh(usr)
