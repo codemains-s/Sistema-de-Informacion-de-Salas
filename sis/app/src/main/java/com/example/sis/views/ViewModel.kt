@@ -13,7 +13,7 @@ class RoomViewModel : ViewModel() {
 
     fun fetchRooms() {
         viewModelScope.launch {
-            _roomResult.value = roomList()
+           // _roomResult.value = roomList("Bearer")
         }
     }
 }

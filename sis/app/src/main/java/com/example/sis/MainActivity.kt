@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                     composable("register") {
                         RegisterView(navController = navController)
                     }
-                    composable("listarSalas"){ HoraryRegisterView(navController = navController, 1, 1) }
+                    composable("listarSalas"){ ListarSalaView(navController = navController) }
                 }
             }
         }
