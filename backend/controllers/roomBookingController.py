@@ -9,13 +9,15 @@ def create_room_booking(new_room_booking: RoomBooking, db):
     # Verificar que el usuario exista
     user = exist_user_id(new_room_booking.user_id, db)
     if not user:
-        raise HTTPException(
-            status_code=400,
-            detail="El usuario con el id proporcionado no existe"
-        )
+        return "Usuario ingresado no existe"
 
-    validate_booking_times(new_room_booking.start_time, new_room_booking.end_time)
-    validate_booking_date(new_room_booking.booking_date)
+    validation_message = validate_booking_times(new_room_booking.start_time, new_room_booking.end_time)
+    if validation_message != "Horas de monitorias son válidas":
+        return validation_message
+
+    validation_message = validate_booking_date(new_room_booking.booking_date)
+    if validation_message != "Fecha válida":
+        return validation_message
 
     db_room_booking = RoomBooking(**new_room_booking.dict())
     db.add(db_room_booking)
@@ -75,29 +77,21 @@ def validate_booking_times(start_time: str, end_time: str):
 
     # Validar el rango de horas permitido
     if start_dt < valid_start_time or start_dt > valid_end_time:
-        raise HTTPException(
-            status_code=400,
-            detail="start_time debe estar entre 6:00 AM y 10:00 PM"
-        )
+        return "Horas de monitorias son inválidas"
     if end_dt < valid_start_time or end_dt > valid_end_time:
-        raise HTTPException(
-            status_code=400,
-            detail="end_time debe estar entre 6:00 AM y 10:00 PM"
-        )
+        return "Horas de monitorias son inválidas"
 
     # Validar que end_time sea mayor que start_time
     if end_dt <= start_dt:
-        raise HTTPException(
-            status_code=400,
-            detail="end_time debe ser mayor que start_time"
-        )
+        return "Horas de monitorias son inválidas"
+
+    return "Horas de monitorias son válidas"
+
 
 def validate_booking_date(booking_date: date):
     """Valida que la fecha de reserva no sea un día pasado."""
     booking_date = datetime.strptime(booking_date, "%d/%m/%Y").date()
     today = date.today()
     if booking_date < today:
-        raise HTTPException(
-            status_code=400,
-            detail="booking_date no puede ser un día pasado"
-        )
+        return "Fecha no válida"
+    return "Fecha válida"

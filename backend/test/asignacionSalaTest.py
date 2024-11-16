@@ -39,8 +39,8 @@ class TestRoomBooking(unittest.TestCase):
             status="Active",
             booking_date="16/11/2024"
         )
-        with self.assertRaises(HTTPException) as context:
-            new_roomBooking(booking, self.db)
+        response = new_roomBooking(booking, self.db)
+        self.assertEqual(response, "Horas de monitorias son inválidas")
 
     def test_AS_03(self):
         """Realizar una asignación de una sala a un usuario monitor que no se encuentra inscrito en el sistema."""
@@ -52,8 +52,8 @@ class TestRoomBooking(unittest.TestCase):
             status="Active",
             booking_date="18/11/2024"
         )
-        with self.assertRaises(HTTPException) as context:
-            new_roomBooking(booking, self.db)
+        response = new_roomBooking(booking, self.db)
+        self.assertEqual(response, "Usuario ingresado no existe")
 
     def test_AS_04(self):
         """Realizar una asignación de una sala a un usuario monitor, haciendo que la fecha de ingreso sea una que ya pasó."""
@@ -65,8 +65,8 @@ class TestRoomBooking(unittest.TestCase):
             status="Active",
             booking_date="05/01/2023" 
         )
-        with self.assertRaises(HTTPException) as context:
-            new_roomBooking(booking, self.db)
+        response = new_roomBooking(booking, self.db)
+        self.assertEqual(response, "Fecha no válida")
 
     def test_AS_05(self):
         """Realizar una asignación de una sala a un usuario monitor, haciendo que las horas de monitoría no estén en un rango aceptado (madrugada)."""
@@ -78,8 +78,8 @@ class TestRoomBooking(unittest.TestCase):
             status="Active",
             booking_date="2024-11-18"
         )
-        with self.assertRaises(HTTPException) as context:
-            new_roomBooking(booking, self.db)
+        response = new_roomBooking(booking, self.db)
+        self.assertEqual(response, "Horas de monitorias son inválidas")
 
 if __name__ == '__main__':
     unittest.main()
