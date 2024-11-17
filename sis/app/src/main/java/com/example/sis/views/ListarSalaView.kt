@@ -90,7 +90,7 @@ fun ListarSalaView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(80.dp), color = Color(0xFFF2C663))
+                CircularProgressIndicator(modifier = Modifier.size(80.dp).padding(10.dp), color = Color(0xFFF2C663))
             } else if (errorMessage != null) {
                 Text(
                     text = errorMessage ?: "Error desconocido",
