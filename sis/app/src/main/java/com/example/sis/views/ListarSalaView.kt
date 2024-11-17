@@ -30,6 +30,7 @@ import com.example.sis.datamodels.room.Room
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberImagePainter
 import com.example.sis.logic.logicRoom.RoomResult
 import com.example.sis.logic.logicRoom.roomList
 
@@ -89,7 +90,7 @@ fun ListarSalaView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                CircularProgressIndicator(modifier = Modifier.size(80.dp), color = Color(0xFFF2C663))
             } else if (errorMessage != null) {
                 Text(
                     text = errorMessage ?: "Error desconocido",
@@ -162,12 +163,13 @@ fun ListarSalaView(
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(15.dp, 0.dp)
                         ) {
+                            val imageUrl = sala?.image
                             Image(
-                                painter = painterResource(id = R.drawable.register),
+                                painter = rememberImagePainter(data = imageUrl ?: R.drawable.register),
                                 contentDescription = "Imagen de la sala",
-                                modifier = Modifier.size(40.dp)
+                                modifier = Modifier.size(100.dp)
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Column {

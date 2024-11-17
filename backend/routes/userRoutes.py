@@ -79,10 +79,24 @@ def all_users(db: Session = Depends(get_db)):
 # get user by id
 @router.get("/user_by_id/", dependencies=[Depends(Portador())])
 def get_user_by_id_endpoint(id: int, db: Session = Depends(get_db)):
-    user = get_user_by_id(id, db)
+    user, role, program = get_user_by_id(id, db)
     if user is None:
         return {"error": "User not found"}
-    return UserOut(**user.__dict__)
+
+    user_out = UserOut(
+        id=user.id,
+        name=user.name,
+        email=user.email,
+        birthdate=user.birthdate,
+        phone=user.phone,
+        program=program.name,
+        role=role.name,
+        token=user.token,
+    )
+
+    print(f"User: {user_out}")
+
+    return user_out
 
 
 # delete user

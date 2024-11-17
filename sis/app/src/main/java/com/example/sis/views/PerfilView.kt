@@ -3,6 +3,7 @@ package com.example.sis.views
 import CustomBottomAppBar
 import CustomTopAppBar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -68,106 +69,130 @@ fun PerfilView(userId: String, navController: NavController) {
                 .verticalScroll(rememberScrollState())
                 .background(Color.White),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.Start
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                IconButton(
-                    onClick = { navController.navigateUp() }
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(align = Alignment.Center)
+                        .padding(0.dp, 10.dp, 0.dp, 0.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Ir para atrás",
-                        tint = Color.Black
-                    )
+                    CircularProgressIndicator(modifier = Modifier.size(80.dp), color = Color(0xFFF2C663))
                 }
-            }
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFF2C663)
-                )
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(16.dp)
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
                 ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Nombre: ")
-                            }
-                            append("${userDetails?.name ?: "Sin nombre"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
+                    IconButton(
+                        onClick = { navController.navigateUp() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Ir para atrás",
+                            tint = Color.Black
+                        )
+                    }
+                }
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFF2C663)
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Correo: ")
-                            }
-                            append("${userDetails?.email ?: "Sin correo"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Estado: ")
-                            }
-                            append("${userDetails?.phone ?: "Sin celular"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Capacidad: ")
-                            }
-                            append("${userDetails?.role_id ?: "Sin role"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Programa: ")
-                            }
-                            append("${userDetails?.program_id?: "Sin programa"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Cumpleaños: ")
-                            }
-                            append("${userDetails?.birthdate ?: "Sin cumpleaños"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Mi perfil",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                        Spacer(modifier = Modifier.height(40.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Nombre: ")
+                                }
+                                append("${userDetails?.name ?: "Sin nombre"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Correo: ")
+                                }
+                                append("${userDetails?.email ?: "Sin correo"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Celular: ")
+                                }
+                                append("${userDetails?.phone ?: "Sin celular"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Rol: ")
+                                }
+                                append("${userDetails?.role ?: "Sin role"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Programa: ")
+                                }
+                                append("${userDetails?.program ?: "Sin programa"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Cumpleaños: ")
+                                }
+                                append("${userDetails?.birthdate ?: "Sin cumpleaños"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black,
+                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
         }
