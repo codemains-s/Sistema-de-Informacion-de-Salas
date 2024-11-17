@@ -109,7 +109,7 @@ fun RegistrarHorasView(
                         /*
                             Este es un campo de pruebas para el nombre que se trae de la base de datos
                          */
-                        val defaultUsername = "Mateo el Duro"
+                        val defaultUsername = "Mateo"
                         Text(
                             text = "Nombre",
                             color = Color.Black,
