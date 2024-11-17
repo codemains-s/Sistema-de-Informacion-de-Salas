@@ -29,7 +29,7 @@ import com.example.sis.ui.theme.SISTheme
 
 import com.example.sis.views.DetalleSalaView
 import com.example.sis.views.HoraryRegisterView
->>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
+
 import com.example.sis.views.ListarSalaView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
@@ -51,7 +51,6 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("listarSalas"){ ListarSalaView(navController = navController) }
                 }
->>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
             }
         }
     }

@@ -25,7 +25,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.sis.R
 import com.example.sis.conexion_api.ApiService
-import com.example.sis.datamodels.Room
+import com.example.sis.datamodels.room.Room
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

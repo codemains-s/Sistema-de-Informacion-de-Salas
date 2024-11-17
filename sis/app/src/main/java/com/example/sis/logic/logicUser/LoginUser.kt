@@ -22,15 +22,13 @@ suspend fun loginUser(email: String, password: String, context: Context): LoginR
             val userLogin = UserLogin(email, password)
             val response = ApiService.userApi.loginUser(userLogin)
             if (response != null) {
-<<<<<<< HEAD
                 ApiService.setAuthToken(response.Token)
                 LoginResult.Success(response.Token)
 
-=======
                 val token = response.Token
                 TokenManager(context).saveToken(token) // Guardar el token
                 LoginResult.Success(token)
->>>>>>> bd99d14f59cd0c7d2cb74b6beec4569155194a8f
+
             } else {
                 LoginResult.Error("Error desconocido en el inicio de sesión")
             }
