@@ -36,7 +36,7 @@ def get_completed_hour_by_user_id_route(user_id: int, db: Session = Depends(get_
     if not exist:
         raise HTTPException(status_code=404, detail="The user does not exist")
     hour = get_completed_hour_by_user_id(user_id, db)
-    return CompletedHourOut(**hour.__dict__)
+    return hour
 
 @router.put("/update_completed_hour/{id}", dependencies=[Depends(Portador())])
 def update_completed_hour_route(id: int, completed_hour: CompletedHour, db: Session = Depends(get_db)):

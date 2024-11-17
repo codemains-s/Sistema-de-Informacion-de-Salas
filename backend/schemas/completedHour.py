@@ -3,10 +3,11 @@ from datetime import date
 
 class CompletedHour(BaseModel):
     room_booking_id: int
-    hour_completed: str
-    date_registered: str
+    user_id: int
+    hour_completed: int
+    date_register: str
     status: str
-    observation: str
+    observations: str
 
 class CompletedHourOut(CompletedHour):
     id: int

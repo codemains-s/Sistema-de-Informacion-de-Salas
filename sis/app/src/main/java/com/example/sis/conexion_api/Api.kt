@@ -7,11 +7,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiService {
-    private var baseUrl = "http://192.168.1.22:8000/" // Default IP
+    private var baseUrl = "http://192.168.1.105:8000/" // Default IP
 
     private val retrofit: Retrofit
         get() = Retrofit.Builder()
             .baseUrl(baseUrl)
+
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -19,12 +20,23 @@ object ApiService {
         baseUrl = "http://$ip:8000/"
     }
 
-    val userApi: User_api
-        get() = retrofit.create(User_api::class.java)
 
-    val roomApi: Room_api
-        get() = retrofit.create(Room_api::class.java)
+    // API de usuario
+    val userApi: User_api by lazy {
+        retrofit.create(User_api::class.java)
+    }
+
+    // API de habitaciones
+    val roomApi: Room_api by lazy {
+        retrofit.create(Room_api::class.java)
+    }
+
+    // Función para actualizar el token
+    fun setAuthToken(token: String) {
+        var authToken = token
+    }
 
     val roomBookingApi: RoomBooking_api
         get() = retrofit.create(RoomBooking_api::class.java)
+
 }

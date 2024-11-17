@@ -8,6 +8,9 @@ from config.db import get_db
 class Portador(HTTPBearer):
     async def __call__(self, request: Request, db=Depends(get_db)):
         try:
+            # mostrar la cabecera de autorización
+            print(request.headers.get("Authorization"))
+
             token = await super().__call__(request)
             print(token)
             datos = validate_token(token.credentials)
