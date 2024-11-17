@@ -12,13 +12,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.sis.R
 import com.example.sis.conexion_api.ApiService
+import com.example.sis.logic.logicUser.TokenManager
 import com.example.sis.logic.user.logicUser.LoginResult
 import com.example.sis.logic.user.logicUser.loginUser
 import kotlinx.coroutines.launch
@@ -116,7 +119,7 @@ fun LoginView(
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
-
+                val tokenManager = TokenManager(context)
                 Button(
                     onClick = {
                         scope.launch {
@@ -124,6 +127,7 @@ fun LoginView(
                             when (val result = loginUser(email, password, context)) {
                                 is LoginResult.Success -> {
                                     token = result.token
+                                    tokenManager.saveToken(token)
                                     userId = result.userId
                                     showSuccessDialog = true
                                     ApiService.setAuthToken(result.token)
@@ -171,9 +175,8 @@ fun LoginView(
                 title = { Text(text = "Inicio de sesión exitoso") },
                 text = {
                     Column {
-                        Text("Has iniciado sesión correctamente")
                         Text(
-                            text = "Token: ${token.take(20)}...",
+                            text = "Has iniciado sesión correctamente",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
@@ -210,36 +213,79 @@ fun LoginView(
 }
 
 @Composable
-fun ErrorDialogLogin(message: String, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Error") },
-        text = { Text(text = message) },
-        confirmButton = {
-            Button(onClick = onDismiss) {
-                Text("OK")
+fun CheckSession(navController: NavController) {
+    val context = LocalContext.current
+    val tokenManager = TokenManager(context)
+    val token = tokenManager.getToken()
+
+    LaunchedEffect(Unit) {
+        if (!token.isNullOrEmpty()) {
+            navController.navigate("listarSalas") {
+                popUpTo("login") { inclusive = true }
             }
         }
-    )
+    }
 }
 
 @Composable
-fun SuccessDialogLogin(navController: NavController, onDismiss: () -> Unit, userId: String) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "successful login") },
-        text = { Text(text = "you have logged in successfully") },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onDismiss()
-                    navController.navigate("profile/${userId}") {
-                        popUpTo("register") { inclusive = true }
+fun LogoutButton(navController: NavController) {
+    val context = LocalContext.current
+    val tokenManager = TokenManager(context)
+    var showDialog by remember { mutableStateOf(false) }
+
+    Column {
+        Button(
+            onClick = { showDialog = true }, // Mostrar el popup al presionar el botón
+            modifier = Modifier
+                .padding(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent, // Fondo transparente
+                contentColor = Color.White         // Color del texto
+            ),
+            elevation = ButtonDefaults.buttonElevation(0.dp) // Sin sombra
+        ) {
+            Text(
+                text = "Cerrar sesión",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text(text = "Confirmar cierre de sesión") },
+                text = { Text(text = "¿Estás seguro de que deseas cerrar sesión?") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            tokenManager.clearToken() // Eliminar el token
+                            navController.navigate("login") {
+                                popUpTo("listarSalas") { inclusive = true }
+                            }
+                            showDialog = false // Cerrar el popup
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Cerrar sesión")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = { showDialog = false }, // Cerrar el popup sin cerrar sesión
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Gray,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Cancelar")
                     }
                 }
-            ) {
-                Text("Continue")
-            }
+            )
         }
-    )
+    }
 }
+
+

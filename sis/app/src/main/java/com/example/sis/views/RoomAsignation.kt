@@ -103,7 +103,7 @@ fun HorayRegisterView(
     )
 
     Scaffold(
-        topBar = {CustomTopAppBar()},
+        topBar = {CustomTopAppBar(navController)},
         bottomBar = {CustomBottomAppBar(navController)}
 
     ) { innerPadding ->

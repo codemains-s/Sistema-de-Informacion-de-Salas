@@ -58,7 +58,7 @@ fun RegistrarHorasView(
     }
 
     Scaffold(
-        topBar = {CustomTopAppBar()},
+        topBar = {CustomTopAppBar(navController)},
         bottomBar = {CustomBottomAppBar(navController)}
 
     ) { innerPadding ->

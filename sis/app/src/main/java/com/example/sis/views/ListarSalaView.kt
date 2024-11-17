@@ -75,7 +75,7 @@ fun ListarSalaView(
 
     Scaffold(
 
-        topBar = {CustomTopAppBar()},
+        topBar = {CustomTopAppBar(navController)},
         bottomBar = {CustomBottomAppBar(navController)}
 
     ) { innerPadding ->
@@ -146,6 +146,7 @@ fun ListarSalaView(
                             Text(text = "Buscar")
                         }
                     }
+
                 }
 
                 filteredSalas.forEach { sala ->
@@ -204,3 +205,5 @@ private fun filterSalas(
     }
     setFilteredSalas(filteredSalas)
 }
+
+

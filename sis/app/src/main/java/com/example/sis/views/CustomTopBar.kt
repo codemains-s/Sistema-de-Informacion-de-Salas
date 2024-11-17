@@ -10,11 +10,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.sis.R
+import com.example.sis.views.LogoutButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopAppBar() {
+fun CustomTopAppBar(
+    navController: NavController
+) {
     TopAppBar(
         title = {
             Row(
@@ -30,16 +34,9 @@ fun CustomTopAppBar() {
                         .weight(1f, fill = false)
                 )
 
-                Text(
-                    text = "SIS",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .weight(1f, fill = false)
-                )
+
+
+                LogoutButton(navController)
             }
         },
         colors = TopAppBarDefaults.smallTopAppBarColors(
