@@ -58,7 +58,7 @@ fun PerfilView(userId: String, navController: NavController) {
 
 
     Scaffold(
-        topBar = {CustomTopAppBar()},
+        topBar = {CustomTopAppBar(navController)},
         bottomBar = {CustomBottomAppBar(navController)}
 
     ) { innerPadding ->
