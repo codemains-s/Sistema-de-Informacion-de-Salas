@@ -2,6 +2,7 @@ package com.example.sis.views
 
 import CustomBottomAppBar
 import CustomTopAppBar
+import RoomIdManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -39,6 +40,7 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    var roomIdManager = RoomIdManager(context)
 
     LaunchedEffect(salaId) {
         coroutineScope.launch {
@@ -52,6 +54,7 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
                 when (result) {
                     is RoomResult.Success -> {
                         roomDetails = result.rooms.firstOrNull()
+                        roomDetails?.id?.let { roomIdManager.saveUserId(it.toString()) }
                     }
                     is RoomResult.Error -> {
                         errorMessage = result.message

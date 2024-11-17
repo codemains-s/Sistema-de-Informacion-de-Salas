@@ -4,6 +4,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -11,6 +12,10 @@ import com.example.sis.R
 
 @Composable
 fun CustomBottomAppBar(navController: NavController) {
+    val context = LocalContext.current
+    var roomIdManager = RoomIdManager(context)
+    var userIdManager = UserIdManager(context)
+
     BottomAppBar(
         containerColor = Color(0xFF0A5795)
     ) {
@@ -39,7 +44,7 @@ fun CustomBottomAppBar(navController: NavController) {
                     modifier = Modifier.size(40.dp)
                 )
             }
-            IconButton(onClick = { navController.navigate("reservarSala") }) {
+            IconButton(onClick = { navController.navigate("profile/${userIdManager.getUserId()}") }) {
                 Image(
                     painter = painterResource(id = R.drawable.account),
                     contentDescription = "Profile",
