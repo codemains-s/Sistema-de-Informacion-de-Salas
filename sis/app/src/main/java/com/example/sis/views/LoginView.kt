@@ -3,7 +3,10 @@ package com.example.sis.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,8 +42,10 @@ fun LoginView(
     var isLoading by remember { mutableStateOf(false) }
     var token by remember { mutableStateOf("") }
     var userId by remember { mutableStateOf("") }
+
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
 
     Box(
         modifier = modifier

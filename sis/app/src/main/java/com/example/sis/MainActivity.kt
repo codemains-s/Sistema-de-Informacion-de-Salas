@@ -6,13 +6,22 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +31,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.sis.logic.logicUser.TokenManager
 import com.example.sis.ui.theme.SISTheme
 import com.example.sis.views.DetalleSalaView
 import com.example.sis.views.HorayRegisterView
@@ -30,6 +40,7 @@ import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
 import com.example.sis.views.PerfilView
 import com.example.sis.views.RegistrarHorasView
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +89,50 @@ fun PreviewMainScreen() {
 
 @Composable
 fun MainScreen(navController: NavController) {
+    val context = LocalContext.current
+    var hasActiveSession by remember { mutableStateOf(false) }
+    val tokenManager = TokenManager(context)
+
+    LaunchedEffect(Unit) {
+        val savedToken = tokenManager.getToken()
+        hasActiveSession = !savedToken.isNullOrEmpty()
+    }
+    if (hasActiveSession) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .zIndex(3f)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Espacio vacío a la izquierda para mantener el botón a la derecha
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Botón de navegación con flecha futurista
+            IconButton(
+                onClick = {
+                    navController.navigate("listarSalas") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                modifier = Modifier
+                    .background(
+                        color = Color.Transparent, // Sin fondo
+                        shape = CircleShape
+                    )
+                    .padding(4.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.flecha), // Cambia por tu recurso SVG
+                    contentDescription = "Continuar",
+                    tint = Color.Unspecified, // Sin color para mantener los detalles originales del SVG
+                    modifier = Modifier.size(32.dp) // Ajusta el tamaño según lo necesario
+                )
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
