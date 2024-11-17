@@ -16,9 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-
 import com.example.sis.R
-import com.example.sis.logic.user.logicUser.LoginResult
 import com.example.sis.logic.user.logicUser.RegisterResult
 import com.example.sis.logic.user.logicUser.registerUser
 import kotlinx.coroutines.launch

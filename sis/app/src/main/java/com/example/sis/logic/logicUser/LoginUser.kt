@@ -1,30 +1,41 @@
 // LoginLogic.kt
 package com.example.sis.logic.user.logicUser
 
+import UserIdManager
 import android.content.Context
+import android.util.Log
 import com.example.sis.conexion_api.ApiService
+import com.example.sis.datamodels.room.Room
+import com.example.sis.datamodels.user.User
 import com.example.sis.datamodels.user.UserLogin
+import com.example.sis.logic.logicRoom.RoomResult
 import com.example.sis.logic.logicUser.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import org.json.JSONObject
+import retrofit2.Response
 
 
 sealed class LoginResult {
-    data class Success(val token: String) : LoginResult()
+    data class Success(val token: String, val userId: String) : LoginResult()
     data class Error(val message: String) : LoginResult()
 }
 
 suspend fun loginUser(email: String, password: String, context: Context): LoginResult {
-    return withContext(Dispatchers.IO) {  // Ejecutar en el hilo de IO
+    return withContext(Dispatchers.IO) {
         try {
             val userLogin = UserLogin(email, password)
             val response = ApiService.userApi.loginUser(userLogin)
+
             if (response != null) {
                 val token = response.Token
-                TokenManager(context).saveToken(token) // Guardar el token
-                LoginResult.Success(token)
+                val userId = response.userId
+
+                TokenManager(context).saveToken(token)
+                UserIdManager(context).saveUserId(userId)
+
+                LoginResult.Success(token, userId)
             } else {
                 LoginResult.Error("Error desconocido en el inicio de sesión")
             }
@@ -42,3 +53,31 @@ suspend fun loginUser(email: String, password: String, context: Context): LoginR
         }
     }
 }
+
+suspend fun userById(context: Context, userId: Int): Result<User> {
+
+    println("userId $userId")
+
+    val token = TokenManager(context).getToken()
+    if (token.isNullOrEmpty()) {
+        return Result.failure(Exception("Token no disponible"))
+    }
+    return withContext(Dispatchers.IO) {
+        try {
+            val response = ApiService.userApi.get_user_by_id(userId, "Bearer $token")
+
+            println("response $response")
+
+            if (response.isSuccessful) {
+                response.body()?.let { user ->
+                    Result.success(user)
+                } ?: Result.failure(Exception("El cuerpo de la respuesta está vacío"))
+            } else {
+                Result.failure(Exception("Error en la API: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
+

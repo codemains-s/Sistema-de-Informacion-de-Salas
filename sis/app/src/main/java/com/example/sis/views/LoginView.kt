@@ -34,6 +34,7 @@ fun LoginView(
     var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var token by remember { mutableStateOf("") }
+    var userId by remember { mutableStateOf("") }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -122,6 +123,7 @@ fun LoginView(
                             when (val result = loginUser(email, password, context)) {
                                 is LoginResult.Success -> {
                                     token = result.token
+                                    userId = result.userId
                                     showSuccessDialog = true
                                 }
                                 is LoginResult.Error -> {
@@ -220,7 +222,7 @@ fun ErrorDialogLogin(message: String, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun SuccessDialogLogin(navController: NavController, onDismiss: () -> Unit) {
+fun SuccessDialogLogin(navController: NavController, onDismiss: () -> Unit, userId: String) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = "successful login") },
@@ -229,7 +231,7 @@ fun SuccessDialogLogin(navController: NavController, onDismiss: () -> Unit) {
             Button(
                 onClick = {
                     onDismiss()
-                    navController.navigate("listarSala") {
+                    navController.navigate("profile/${userId}") {
                         popUpTo("register") { inclusive = true }
                     }
                 }

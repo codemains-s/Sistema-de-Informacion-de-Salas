@@ -22,13 +22,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.sis.logic.user.logicUser.loginUser
-import com.example.sis.logic.user.logicUser.registerUser
 import com.example.sis.ui.theme.SISTheme
-import com.example.sis.views.HoraryRegisterView
+import com.example.sis.views.DetalleSalaView
+import com.example.sis.views.HorayRegisterView
 import com.example.sis.views.ListarSalaView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
+import com.example.sis.views.PerfilView
 import com.example.sis.views.RegistrarHorasView
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +46,21 @@ class MainActivity : ComponentActivity() {
                         RegisterView(navController = navController)
                     }
                     composable("listarSalas"){ ListarSalaView(navController = navController) }
+                    composable("reservarSala"){ HorayRegisterView(navController = navController, 1, 6) }
+                    composable("registrarHoras"){ RegistrarHorasView(navController = navController) }
+
+                    composable("detalleSala/{salaId}") { backStackEntry ->
+                        val salaId = backStackEntry.arguments?.getString("salaId")
+                        if (salaId != null) {
+                            DetalleSalaView(salaId, navController)
+                        }
+                    }
+                    composable("profile/{userId}") { backStackEntry ->
+                        val userId = backStackEntry.arguments?.getString("userId")
+                        if (userId != null) {
+                            PerfilView(userId = userId, navController = navController)
+                        }
+                    }
                 }
             }
         }

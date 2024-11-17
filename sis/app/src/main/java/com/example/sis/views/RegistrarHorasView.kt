@@ -1,5 +1,7 @@
 package com.example.sis.views
 
+import CustomBottomAppBar
+import CustomTopAppBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,17 +13,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,10 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sis.R
 import androidx.compose.runtime.getValue
@@ -46,95 +42,25 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.sis.ui.theme.SISTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrarHorasView(
     navController: NavController,
-    viewModel: RoomViewModel = viewModel()
 ) {
     var inputText by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        viewModel.fetchRooms()
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.login),
-                            contentDescription = "Logo Universidad",
-                            modifier = Modifier.size(40.dp)
-                        )
-                        Text(
-                            text = "Universidad de Caldas",
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "SIS",
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.padding(end = 16.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color(0xFF0A5795)
-                )
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color(0xFF0A5795)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.home),
-                        contentDescription = "Home",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.schedule),
-                        contentDescription = "Schedule",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.notification),
-                        contentDescription = "Notifications",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.account),
-                        contentDescription = "Profile",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.setting), // Icono extra
-                        contentDescription = "Settings",
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-            }
-        }
+        topBar = {CustomTopAppBar()},
+        bottomBar = {CustomBottomAppBar(navController)}
+
     ) { innerPadding ->
         Box(
             modifier = Modifier

@@ -10,6 +10,7 @@ from controllers.roomController import (
     update_room,
     delete_room,
     exist_room,
+    get_room_by_id,
 )
 
 router = APIRouter()
@@ -36,6 +37,15 @@ def get_all_rooms(db: Session = Depends(get_db)):
 @router.get("/room_by_name/", dependencies=[Depends(Portador())])
 def get_room_by_name_endpoint(name: str, db: Session = Depends(get_db)):
     room = get_room_by_name(name, db)
+    if room is None:
+        return {"error": "Room not found"}
+    return RoomOut(**room.__dict__)
+
+
+# Get room by id
+@router.get("/room_by_id/", dependencies=[Depends(Portador())])
+def get_room_by_name_endpoint(id: int, db: Session = Depends(get_db)):
+    room = get_room_by_id(id, db)
     if room is None:
         return {"error": "Room not found"}
     return RoomOut(**room.__dict__)

@@ -1,5 +1,7 @@
 package com.example.sis.views
 
+import CustomBottomAppBar
+import CustomTopAppBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -30,13 +32,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
 import com.example.sis.logic.logicRoom.RoomResult
 import com.example.sis.logic.logicRoom.roomList
-import com.example.sis.logic.logicUser.TokenManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListarSalaView(
     navController: NavController,
-    modifier: Modifier = Modifier
 ) {
     val (searchText, setSearchText) = remember { mutableStateOf("") }
     var allSalas by remember { mutableStateOf<List<Room>>(emptyList()) }
@@ -47,8 +47,6 @@ fun ListarSalaView(
     val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
-    val tokenManager = TokenManager(context)
-    val token = tokenManager.getToken() ?: ""
 
     LaunchedEffect(Unit) {
         coroutineScope.launch {
@@ -76,75 +74,10 @@ fun ListarSalaView(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.logo_blanco_ucaldas_recortado),
-                            contentDescription = "Logo Universidad",
-                            modifier = Modifier
-                                .size(250.dp)
-                                .weight(1f, fill = false)
-                        )
 
-                        Text(
-                            text = "SIS",
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .padding(end = 16.dp)
-                                .weight(1f, fill = false)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color(0xFF0A5795)
-                )
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color(0xFF0A5795)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Home",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Schedule",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ucaldas_fondo2),
-                        contentDescription = "Notifications",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ucaldas_fondo1),
-                        contentDescription = "Profile",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Settings",
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-            }
-        }
+        topBar = {CustomTopAppBar()},
+        bottomBar = {CustomBottomAppBar(navController)}
+
     ) { innerPadding ->
         Column(
             modifier = Modifier

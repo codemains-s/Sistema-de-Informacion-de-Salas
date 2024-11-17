@@ -9,5 +9,6 @@ data class User(
     val birthdate: Date,
     val phone: String,
     val role_id: Int,
-    val token: String
+    val token: String,
+    val program_id: String
 )

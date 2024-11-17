@@ -1,5 +1,7 @@
 package com.example.sis.views
 
+import CustomBottomAppBar
+import CustomTopAppBar
 import android.app.TimePickerDialog
 import android.widget.DatePicker
 import android.widget.TimePicker
@@ -24,21 +26,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.sis.R
 import com.example.sis.logic.logicRoom.RegisterBookingResult
 import com.example.sis.logic.logicRoom.registerBooking
-import com.example.sis.ui.theme.SISTheme
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-fun HoraryRegisterView(
+fun HorayRegisterView(
     navController: NavController,
     roomId: Int,
     userId: Int,
@@ -105,75 +103,9 @@ fun HoraryRegisterView(
     )
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.register),
-                            contentDescription = "Logo Universidad",
-                            modifier = Modifier.size(40.dp)
-                        )
-                        Text(
-                            text = "Universidad de Caldas",
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(top = 5.dp)
-                        )
-                        Text(
-                            text = "SIS",
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(end = 16.dp, top = 5.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color(0xFF0A5795)
-                )
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color(0xFF0A5795)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Home",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Schedule",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ucaldas_fondo2),
-                        contentDescription = "Notifications",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ucaldas_fondo1),
-                        contentDescription = "Profile",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Settings",
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-            }
-        }
+        topBar = {CustomTopAppBar()},
+        bottomBar = {CustomBottomAppBar(navController)}
+
     ) { innerPadding ->
         Box(
             modifier = Modifier
