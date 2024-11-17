@@ -81,25 +81,21 @@ fun HorayRegisterView(
     val timePickerDialogInicio = TimePickerDialog(
         context,
         { _: TimePicker, hourOfDay: Int, minute: Int ->
-            // Convierte la hora en formato 12 horas y valida el rango
-            val isPM = hourOfDay >= 12
-            val hour = if (hourOfDay > 12) hourOfDay - 12 else hourOfDay
+            // Valida el rango de tiempo y ajusta el formato militar
             val (validatedHour, validatedMinute) = validateTime(hourOfDay, minute)
-            horaInicio = String.format("%02d:%02d %s", validatedHour, validatedMinute, if (isPM) "PM" else "AM")
+            horaInicio = String.format("%02d:%02d", validatedHour, validatedMinute) // Formato militar
         },
-        6, 0, false // El último parámetro indica si es formato 24 horas (false para 12 horas)
+        6, 0, true // El último parámetro en true indica formato 24 horas
     )
 
     val timePickerDialogFin = TimePickerDialog(
         context,
         { _: TimePicker, hourOfDay: Int, minute: Int ->
-            // Convierte la hora en formato 12 horas y valida el rango
-            val isPM = hourOfDay >= 12
-            val hour = if (hourOfDay > 12) hourOfDay - 12 else hourOfDay
+            // Valida el rango de tiempo y ajusta el formato militar
             val (validatedHour, validatedMinute) = validateTime(hourOfDay, minute)
-            horaFin = String.format("%02d:%02d %s", validatedHour, validatedMinute, if (isPM) "PM" else "AM")
+            horaFin = String.format("%02d:%02d", validatedHour, validatedMinute) // Formato militar
         },
-        6, 0, false // El último parámetro indica si es formato 24 horas (false para 12 horas)
+        6, 0, true // El último parámetro en true indica formato 24 horas
     )
 
     Scaffold(

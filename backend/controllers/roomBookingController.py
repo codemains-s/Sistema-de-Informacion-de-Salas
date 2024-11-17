@@ -67,21 +67,22 @@ def exist_room_booking(id: int, db):
 def validate_booking_times(start_time: str, end_time: str):
     """Valida que los horarios sean correctos:
        - end_time no sea anterior o igual a start_time
-       - Ambos horarios estén entre 6:00 AM y 10:00 PM
+       - Ambos horarios estén entre 6:00 y 22:00 (formato 24 horas)
     """
     valid_start_time = time(6, 0)
     valid_end_time = time(22, 0)
 
-    start_dt = datetime.strptime(start_time, "%I:%M %p").time()
-    end_dt = datetime.strptime(end_time, "%I:%M %p").time()
+    try:
+        start_dt = datetime.strptime(start_time, "%H:%M").time()
+        end_dt = datetime.strptime(end_time, "%H:%M").time()
+    except ValueError:
+        return "Formato de hora inválido. Debe ser HH:MM (24 horas)."
 
-    # Validar el rango de horas permitido
     if start_dt < valid_start_time or start_dt > valid_end_time:
         return "Horas de monitorias son inválidas"
     if end_dt < valid_start_time or end_dt > valid_end_time:
         return "Horas de monitorias son inválidas"
 
-    # Validar que end_time sea mayor que start_time
     if end_dt <= start_dt:
         return "Horas de monitorias son inválidas"
 
