@@ -20,8 +20,8 @@ class TestRoomBooking(unittest.TestCase):
         booking = RoomBooking(
             user_id=1,
             room_id=1,
-            start_time="08:00 AM",
-            end_time="10:00 AM",
+            start_time="08:00",
+            end_time="10:00",
             status="Active",
             booking_date="16/11/2024"
         )
@@ -34,8 +34,8 @@ class TestRoomBooking(unittest.TestCase):
         booking = RoomBooking(
             user_id=1,
             room_id=1,
-            start_time="12:00 AM",
-            end_time="10:00 PM",
+            start_time="12:00",
+            end_time="10:00",
             status="Active",
             booking_date="16/11/2024"
         )
@@ -47,8 +47,8 @@ class TestRoomBooking(unittest.TestCase):
         booking = RoomBooking(
             user_id=9999,
             room_id=1,
-            start_time="2:00 PM",
-            end_time="4:00 PM",
+            start_time="14:00 PM",
+            end_time="16:00 PM",
             status="Active",
             booking_date="18/11/2024"
         )
@@ -60,8 +60,8 @@ class TestRoomBooking(unittest.TestCase):
         booking = RoomBooking(
             user_id=1,
             room_id=1,
-            start_time="2:00 PM",
-            end_time="4:00 PM",
+            start_time="14:00",
+            end_time="16:00",
             status="Active",
             booking_date="05/01/2023" 
         )
@@ -73,8 +73,8 @@ class TestRoomBooking(unittest.TestCase):
         booking = RoomBooking(
             user_id=1,
             room_id=1,
-            start_time="01:00 AM",
-            end_time="03:00 AM",  
+            start_time="01:00",
+            end_time="03:00",  
             status="Active",
             booking_date="2024-11-18"
         )
