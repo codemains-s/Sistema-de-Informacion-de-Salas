@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,7 +83,17 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.size(80.dp).padding(10.dp), color = Color(0xFFF2C663))
+            } else if (errorMessage != null) {
+                Text(
+                    text = errorMessage ?: "Error desconocido",
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else {
+                Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier
@@ -188,4 +199,5 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
             }
         }
     }
+}
 }
