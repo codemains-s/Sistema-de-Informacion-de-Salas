@@ -56,11 +56,9 @@ fun PerfilView(userId: String, navController: NavController) {
         }
     }
 
-
     Scaffold(
-        topBar = {CustomTopAppBar(navController)},
-        bottomBar = {CustomBottomAppBar(navController)}
-
+        topBar = { CustomTopAppBar(navController) },
+        bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -78,7 +76,10 @@ fun PerfilView(userId: String, navController: NavController) {
                         .wrapContentSize(align = Alignment.Center)
                         .padding(0.dp, 10.dp, 0.dp, 0.dp)
                 ) {
-                    CircularProgressIndicator(modifier = Modifier.size(80.dp), color = Color(0xFFF2C663))
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(80.dp),
+                        color = Color(0xFFF2C663)
+                    )
                 }
             } else {
                 Row(
@@ -140,8 +141,7 @@ fun PerfilView(userId: String, navController: NavController) {
                                 append("${userDetails?.email ?: "Sin correo"}")
                             },
                             fontSize = 14.sp,
-                            color = Color.Black,
-                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                            color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -152,8 +152,7 @@ fun PerfilView(userId: String, navController: NavController) {
                                 append("${userDetails?.phone ?: "Sin celular"}")
                             },
                             fontSize = 14.sp,
-                            color = Color.Black,
-                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                            color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -161,11 +160,10 @@ fun PerfilView(userId: String, navController: NavController) {
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                                     append("Rol: ")
                                 }
-                                append("${userDetails?.role ?: "Sin role"}")
+                                append("${userDetails?.role ?: "Sin rol"}")
                             },
                             fontSize = 14.sp,
-                            color = Color.Black,
-                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                            color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -176,8 +174,7 @@ fun PerfilView(userId: String, navController: NavController) {
                                 append("${userDetails?.program ?: "Sin programa"}")
                             },
                             fontSize = 14.sp,
-                            color = Color.Black,
-                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                            color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -188,11 +185,28 @@ fun PerfilView(userId: String, navController: NavController) {
                                 append("${userDetails?.birthdate ?: "Sin cumpleaños"}")
                             },
                             fontSize = 14.sp,
-                            color = Color.Black,
-                            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+                            color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp)) // Espacio entre la tarjeta y el botón
+
+                Button(
+                    onClick = { navController.navigate("listarSalas") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .height(48.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
+                ) {
+                    Text(
+                        text = "Listar Salas",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }

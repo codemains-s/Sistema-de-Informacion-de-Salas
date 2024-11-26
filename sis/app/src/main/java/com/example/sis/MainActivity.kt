@@ -57,7 +57,13 @@ class MainActivity : ComponentActivity() {
                         RegisterView(navController = navController)
                     }
                     composable("listarSalas"){ ListarSalaView(navController = navController) }
-                    composable("reservarSala"){ HorayRegisterView(navController = navController, 1, 6) }
+                    composable("reservarSala/{roomID}/{userID}") { backStackEntry ->
+                        val roomID = backStackEntry.arguments?.getString("roomID")?.toIntOrNull()
+                        val userID = backStackEntry.arguments?.getString("userID")?.toIntOrNull()
+                        if (roomID != null && userID != null) {
+                            HorayRegisterView(navController = navController, roomId = roomID, userId = userID)
+                        }
+                    }
                     composable("registrarHoras"){ RegistrarHorasView(navController = navController) }
 
                     composable("detalleSala/{salaId}") { backStackEntry ->

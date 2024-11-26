@@ -182,7 +182,11 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Button(
-                        onClick = { navController.navigate("reservarSala") },
+                        onClick = {
+                            val roomID = roomDetails?.id ?: return@Button
+                            val userID = 1
+                            navController.navigate("reservarSala/$roomID/$userID")
+                        },
                         modifier = Modifier.height(50.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF0A5795),
