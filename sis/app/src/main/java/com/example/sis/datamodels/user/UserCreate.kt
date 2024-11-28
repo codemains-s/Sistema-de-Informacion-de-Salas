@@ -5,5 +5,6 @@ data class UserCreate(
     val email: String,
     val birthdate: String,
     val phone: String,
-    val password: String
+    val password: String,
+    val program_id:Int
 )

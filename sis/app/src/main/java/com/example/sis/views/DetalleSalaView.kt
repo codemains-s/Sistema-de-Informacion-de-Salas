@@ -3,6 +3,7 @@ package com.example.sis.views
 import CustomBottomAppBar
 import CustomTopAppBar
 import RoomIdManager
+import UserIdManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -42,6 +43,8 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     var roomIdManager = RoomIdManager(context)
+
+    val userId = UserIdManager(context).getUserId()
 
     LaunchedEffect(salaId) {
         coroutineScope.launch {
@@ -94,114 +97,113 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
                 )
             } else {
                 Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                IconButton(
-                    onClick = { navController.navigateUp() }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Ir para atrás",
-                        tint = Color.Black
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = roomDetails?.name ?: "Nombre de la sala",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black
-                )
-            }
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFF2C663)
-                )
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    val imageUrl = roomDetails?.image
-                    Image(
-                        painter = rememberImagePainter(data = imageUrl ?: R.drawable.register),
-                        contentDescription = "Imagen de la sala",
-                        modifier = Modifier
-                            .size(350.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                    Spacer(modifier = Modifier.height(0.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Descripción: ")
-                            }
-                            append("${roomDetails?.description ?: "Sin descripción"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Estado: ")
-                            }
-                            append("${roomDetails?.status ?: "Sin estado"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Capacidad: ")
-                            }
-                            append("${roomDetails?.capacity ?: "Sin capacidad"}")
-                        },
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-
-                Box(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 80.dp),
-                    contentAlignment = Alignment.Center
+                        .padding(8.dp)
                 ) {
-                    Button(
-                        onClick = {
-                            val roomID = roomDetails?.id ?: return@Button
-                            val userID = 1
-                            navController.navigate("reservarSala/$roomID/$userID")
-                        },
-                        modifier = Modifier.height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF0A5795),
-                            contentColor = Color.White
-                        )
+                    IconButton(
+                        onClick = { navController.navigateUp() }
                     ) {
-                        Text(text = "Reservar")
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Ir para atrás",
+                            tint = Color.Black
+                        )
                     }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = roomDetails?.name ?: "Nombre de la sala",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.Black
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFF2C663)
+                    )
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        val imageUrl = roomDetails?.image
+                        Image(
+                            painter = rememberImagePainter(data = imageUrl ?: R.drawable.register),
+                            contentDescription = "Imagen de la sala",
+                            modifier = Modifier
+                                .size(350.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+                        Spacer(modifier = Modifier.height(0.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Descripción: ")
+                                }
+                                append("${roomDetails?.description ?: "Sin descripción"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Estado: ")
+                                }
+                                append("${roomDetails?.status ?: "Sin estado"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Capacidad: ")
+                                }
+                                append("${roomDetails?.capacity ?: "Sin capacidad"}")
+                            },
+                            fontSize = 14.sp,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 80.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Button(
+                            onClick = {
+                                val roomID = roomDetails?.id ?: return@Button
+                                navController.navigate("reservarSala/$roomID/${userId}")
+                            },
+                            modifier = Modifier.height(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF0A5795),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = "Reservar")
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
 
 
+                }
             }
         }
     }
-}
 }

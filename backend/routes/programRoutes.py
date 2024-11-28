@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from security.seguridad import Portador
 from controllers.programController import (create_program, all_programs, 
                                            get_program_by_id, update_program, 
-                                           delete_program, exist_program, exist_program_by_name)
+                                           delete_program, exist_program, exist_program_by_name, get_id_program_by_name)
 
 router = APIRouter()
 
@@ -17,9 +17,17 @@ def new_program(program: Program, db: Session = Depends(get_db)):
     program = create_program(program, db)
     return program
 
-@router.get("/all_programs/", dependencies=[Depends(Portador())])
+@router.get("/all_programs/")
 def programs(db: Session = Depends(get_db)):
     return all_programs(db)
+
+@router.get("/program_id/{name}", dependencies=[Depends(Portador())])
+def program_id(name: str, db: Session = Depends(get_db)):
+    exist = exist_program_by_name(name, db)
+    if not exist:
+        raise HTTPException(status_code=404, detail="The program does not exist")
+    program_id = get_id_program_by_name(name, db)
+    return program_id
 
 @router.get("/program/{id}", dependencies=[Depends(Portador())])
 def program(id: int, db: Session = Depends(get_db)):

@@ -15,6 +15,10 @@ def all_programs(db):
 def get_program_by_id(id: int, db):
     return db.query(Program).filter(Program.id == id).first()
 
+def get_id_program_by_name(name: str, db):
+    program = db.query(Program).filter(func.upper(Program.name) == name.upper()).first()
+    return program.id
+
 def update_program(id: int, new_program: Program, db):
     db_program = db.query(Program).filter(Program.id == id).first()
     db_program.name = new_program.name

@@ -1,4 +1,4 @@
-from schemas.roomBooking import RoomBooking
+from schemas.roomBooking import RoomBooking, RoomBookingOut
 from models.tables import *
 from sqlalchemy import func, text
 from datetime import datetime, time, date
@@ -23,11 +23,13 @@ def create_room_booking(new_room_booking: RoomBooking, db):
     db.add(db_room_booking)
     db.commit()
     db.refresh(db_room_booking)
-    return "Sala asignada al estudiante de manera correcta"
+    return db_room_booking
 
 
 def all_room_bookings(db):
-    return db.query(RoomBooking).all()
+    salida = db.query(RoomBooking).all()
+    return salida
+
 
 def get_room_booking_by_id(id: int, db):
     return db.query(RoomBooking).filter(RoomBooking.id == id).first()

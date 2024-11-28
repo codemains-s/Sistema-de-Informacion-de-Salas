@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +36,12 @@ import com.example.sis.logic.logicUser.TokenManager
 import com.example.sis.ui.theme.SISTheme
 import com.example.sis.views.DetalleSalaView
 import com.example.sis.views.HorayRegisterView
+import com.example.sis.views.ListarReservasSalaView
 import com.example.sis.views.ListarSalaView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
 import com.example.sis.views.PerfilView
+import com.example.sis.views.ProgramListView
 import com.example.sis.views.RegistrarHorasView
 
 
@@ -60,8 +63,8 @@ class MainActivity : ComponentActivity() {
                     composable("reservarSala/{roomID}/{userID}") { backStackEntry ->
                         val roomID = backStackEntry.arguments?.getString("roomID")?.toIntOrNull()
                         val userID = backStackEntry.arguments?.getString("userID")?.toIntOrNull()
-                        if (roomID != null && userID != null) {
-                            HorayRegisterView(navController = navController, roomId = roomID, userId = userID)
+                        if (roomID != null) {
+                            HorayRegisterView(navController = navController, roomId = roomID)
                         }
                     }
                     composable("registrarHoras"){ RegistrarHorasView(navController = navController) }
@@ -78,9 +81,16 @@ class MainActivity : ComponentActivity() {
                             PerfilView(userId = userId, navController = navController)
                         }
                     }
+                    composable ("programList"){
+                        ProgramListView(navController= navController)
+                    }
+                    composable ("listarReservas"){
+                        ListarReservasSalaView(navController = navController)
+                    }
                 }
             }
         }
+
     }
 }
 

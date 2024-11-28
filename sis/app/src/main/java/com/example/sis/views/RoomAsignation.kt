@@ -2,14 +2,13 @@ package com.example.sis.views
 
 import CustomBottomAppBar
 import CustomTopAppBar
+import UserIdManager
 import android.app.TimePickerDialog
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -25,12 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -48,16 +43,16 @@ import java.util.Calendar
 @Composable
 fun HorayRegisterView(
     navController: NavController,
-    roomId: Int,
-    userId: Int,
+    roomId: Int
+
 ) {
     var userDetails by remember { mutableStateOf<User?>(null) }
     var roomDetails by remember { mutableStateOf<Room?>(null) }
     var isLoadingRoom by remember { mutableStateOf(true) }
     var errorMessageRoom by remember { mutableStateOf<String?>(null) }
-
-    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val userId = UserIdManager(context).getUserId()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(roomId) {
         coroutineScope.launch {
@@ -89,15 +84,17 @@ fun HorayRegisterView(
                 isLoadingRoom = true
                 errorMessageRoom = null
 
-                val result = userById(context, userId.toInt())
-                result.fold(
-                    onSuccess = { user ->
-                        userDetails = user
-                    },
-                    onFailure = { error ->
-                        errorMessageRoom = error.message
-                    }
-                )
+                val result = userId?.let { userById(context, it.toInt()) }
+                if (result != null) {
+                    result.fold(
+                        onSuccess = { user ->
+                            userDetails = user
+                        },
+                        onFailure = { error ->
+                            errorMessageRoom = error.message
+                        }
+                    )
+                }
             } finally {
                 isLoadingRoom = false
             }
@@ -277,21 +274,26 @@ fun HorayRegisterView(
                                 onClick = {
                                     scope.launch {
                                         isLoading = true
-                                        when (val result = registerBooking(
-                                            user_id = userId,
-                                            room_id = roomId,
-                                            booking_date = selectedDate,
-                                            start_time = horaInicio,
-                                            end_time = horaFin,
-                                            status = "En curso..."
-                                        )) {
+                                        when (val result = userId?.let {
+                                            registerBooking(
+                                                user_id = it.toInt(),
+                                                room_id = roomId,
+                                                booking_date = selectedDate,
+                                                start_time = horaInicio,
+                                                end_time = horaFin,
+                                                status = "En curso..."
+                                            )
+                                        }) {
                                             is RegisterBookingResult.Success -> {
                                                 showSuccessDialog = true
+                                                navController.navigate("listarReservas")
                                             }
                                             is RegisterBookingResult.Error -> {
                                                 errorMessage = result.message
                                                 showErrorDialog = true
                                             }
+
+                                            null -> TODO()
                                         }
                                         isLoading = false
                                     }
@@ -303,6 +305,21 @@ fun HorayRegisterView(
                             ) {
                                 Text(
                                     text = "Registrar",
+                                    color = Color(0xFFF2C663)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Button(
+                                onClick = {
+                                    navController.navigate("listarReservas")
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF0A5795)
+                                ),
+                                modifier = Modifier.fillMaxWidth()
+                            ){
+                                Text(
+                                    text = "Consultar reservas",
                                     color = Color(0xFFF2C663)
                                 )
                             }

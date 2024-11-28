@@ -3,24 +3,33 @@ package com.example.sis.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.sis.R
+import com.example.sis.datamodels.program.Program
+import com.example.sis.logic.logicProgram.ProgramResult
+import com.example.sis.logic.logicProgram.programList
 import com.example.sis.logic.user.logicUser.RegisterResult
 import com.example.sis.logic.user.logicUser.registerUser
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterView(
     navController: NavController,
@@ -31,20 +40,44 @@ fun RegisterView(
     var birthdate by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var selectedProgram by remember { mutableStateOf<Program?>(null) }
     var code by remember { mutableStateOf("") }
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    var isLoadingPrograms by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+    var programs by remember { mutableStateOf<List<Program>>(emptyList()) }
+    var programLoadError by remember { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    // Dropdown state management
+    var expanded by remember { mutableStateOf(false) }
+
+    // Program loading effect
+    LaunchedEffect(Unit) {
+        isLoadingPrograms = true
+        when (val result = programList(context)) {
+            is ProgramResult.Success -> {
+                programs = result.programs
+                programLoadError = null
+            }
+            is ProgramResult.Error -> {
+                programs = emptyList()
+                programLoadError = result.message
+            }
+        }
+        isLoadingPrograms = false
+    }
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF2196F3))  // Fondo azul
+            .background(Color(0xFF2196F3))
     ) {
-        // Imagen de fondo
         Image(
             painter = painterResource(id = R.drawable.ucaldas_fondo2),
             contentDescription = "Fondo de registro",
@@ -55,14 +88,13 @@ fun RegisterView(
             alpha = 0.3f
         )
 
-        // Contenedor principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .zIndex(2f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Text(
                 text = "Register in SIS",
                 style = MaterialTheme.typography.headlineLarge,
@@ -73,7 +105,6 @@ fun RegisterView(
                 color = Color.White
             )
 
-            // Formulario
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -88,6 +119,7 @@ fun RegisterView(
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent
                 )
+
                 Image(
                     painter = painterResource(id = R.drawable.register),
                     contentDescription = "Fondo de registro",
@@ -97,6 +129,66 @@ fun RegisterView(
                         .padding(bottom = 16.dp)
                 )
 
+                // Program Dropdown
+                if (isLoadingPrograms) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(vertical = 16.dp)
+                    )
+                } else if (programLoadError != null) {
+                    Text(
+                        text = programLoadError ?: "Error loading programs",
+                        color = Color.Red,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
+                } else {
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = !expanded },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        TextField(
+                            value = selectedProgram?.name ?: "Select Program",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Program") },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(
+                                    expanded = expanded
+                                )
+                            },
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.Black.copy(alpha = 0.9f),
+                                focusedContainerColor = Color.Black,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent
+                            ),
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth(),
+                            shape = textFieldShape
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            programs.forEach { program ->
+                                DropdownMenuItem(
+                                    text = { Text(program.name) },
+                                    onClick = {
+                                        selectedProgram = program
+                                        expanded = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Rest of the form fields remain the same
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -146,7 +238,7 @@ fun RegisterView(
                 OutlinedTextField(
                     value = code,
                     onValueChange = { code = it },
-                    label = { Text("code of admin") },
+                    label = { Text("Code of admin") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = textFieldShape,
                     colors = textFieldColors
@@ -156,24 +248,32 @@ fun RegisterView(
 
                 Button(
                     onClick = {
-                       scope.launch {
-                           isLoading = true
-                           when (val result = registerUser(name, email, birthdate, phone, password, code)){
-                               is RegisterResult.Success -> {
-                                   showSuccessDialog = true
-                               }
-                               is RegisterResult.Error -> {
-                                   errorMessage = when (result.message) {
-                                       "User exist" -> "User already exist"
-                                       "Email incorrect" -> "Email not valid"
-                                       "Password incorect" -> "Password not valid"
-                                       else -> result.message
-                                   }
-                                   showErrorDialog = true
-                               }
-                           }
-                           isLoading = false
-                       }
+                        scope.launch {
+                            isLoading = true
+                            when (val result = registerUser(
+                                name,
+                                email,
+                                birthdate,
+                                phone,
+                                password,
+                                selectedProgram?.id ?: 0,
+                                code
+                            )) {
+                                is RegisterResult.Success -> {
+                                    showSuccessDialog = true
+                                }
+                                is RegisterResult.Error -> {
+                                    errorMessage = when (result.message) {
+                                        "User exist" -> "User already exist"
+                                        "Email incorrect" -> "Email not valid"
+                                        "Password incorect" -> "Password not valid"
+                                        else -> result.message
+                                    }
+                                    showErrorDialog = true
+                                }
+                            }
+                            isLoading = false
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -182,7 +282,7 @@ fun RegisterView(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     ),
-                    enabled = !isLoading
+                    enabled = !isLoading && selectedProgram != null
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
@@ -198,6 +298,8 @@ fun RegisterView(
                 }
             }
         }
+
+        // Success and Error Dialogs remain the same
         if (showSuccessDialog) {
             AlertDialog(
                 onDismissRequest = { showSuccessDialog = false },
@@ -205,7 +307,6 @@ fun RegisterView(
                 text = {
                     Column {
                         Text("Te Has Registrado sesión correctamente")
-
                     }
                 },
                 confirmButton = {
@@ -222,6 +323,7 @@ fun RegisterView(
                 }
             )
         }
+
         if (showErrorDialog) {
             AlertDialog(
                 onDismissRequest = { showErrorDialog = false },
@@ -235,25 +337,4 @@ fun RegisterView(
             )
         }
     }
-}
-
-@Composable
-fun SuccessDialog(navController: NavController, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "successful registration in SIS") },
-        text = { Text(text = "Your registration has been completed successfully.") },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onDismiss()
-                    navController.navigate("login") {
-                        popUpTo("register") { inclusive = true }
-                    }
-                }
-            ) {
-                Text("Go to login")
-            }
-        }
-    )
 }

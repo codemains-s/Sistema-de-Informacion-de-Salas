@@ -12,10 +12,10 @@ sealed class RegisterResult {
     data class Error(val message: String) : RegisterResult()
 }
 
-suspend fun registerUser(name: String, email: String, birthdate: String, phone: String, password: String, codeAdmin: String):RegisterResult {
+suspend fun registerUser(name: String, email: String, birthdate: String, phone: String, password: String, program_id: Int, codeAdmin: String):RegisterResult {
     return withContext(Dispatchers.IO){
         try {
-            val newUser = UserCreate(name, email, birthdate, phone, password)
+            val newUser = UserCreate(name, email, birthdate, phone, password, program_id)
             // Hacer la llamada al API para registrar el usuario
             val response = ApiService.userApi.register_user(newUser, code = codeAdmin)
             if (response != null) {
