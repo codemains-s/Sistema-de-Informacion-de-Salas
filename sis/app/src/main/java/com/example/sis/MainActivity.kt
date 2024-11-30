@@ -8,12 +8,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +40,7 @@ import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
 import com.example.sis.views.PerfilView
 import com.example.sis.views.ProgramListView
+import com.example.sis.views.ProgramRegisterView
 import com.example.sis.views.RegistrarHorasView
 
 
@@ -93,6 +91,9 @@ class MainActivity : ComponentActivity() {
                         if (salaId != null) {
                             ListarHorariosSalaView(id = salaId.toInt(), navController = navController)
                         }
+                    }
+                    composable("registrarPrograma"){
+                        ProgramRegisterView(navController = navController)
                     }
 
                 }

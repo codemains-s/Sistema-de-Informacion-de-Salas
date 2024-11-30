@@ -6,8 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,14 +19,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.sis.datamodels.program.Program
+import com.example.sis.datamodels.program.ProgramById
 import com.example.sis.logic.logicProgram.ProgramResult
 import com.example.sis.logic.logicProgram.programList
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProgramListView(navController: NavController) {
-    var programs by remember { mutableStateOf<List<Program>>(emptyList()) }
+    var programs by remember { mutableStateOf<List<ProgramById>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 

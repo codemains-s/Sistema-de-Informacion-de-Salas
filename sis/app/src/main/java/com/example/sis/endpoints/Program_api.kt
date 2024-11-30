@@ -1,6 +1,7 @@
 package com.example.sis.endpoints
 
 import com.example.sis.datamodels.program.Program
+import com.example.sis.datamodels.program.ProgramById
 import com.example.sis.datamodels.program.ProgramId
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -11,11 +12,14 @@ import retrofit2.http.Query
 interface Program_api {
     @POST("/new_program/")
     suspend fun newProgram(
-        @Body program: Program
+        @Body program: Program,
+        @Header("Authorization") authHeader: String
     ): Program
 
     @GET("/all_programs/")
-    suspend fun allPrograms(): List<Program>
+    suspend fun allPrograms(
+        @Header("Authorization") authHeader: String
+    ): List<ProgramById>
 
     @GET("/program/{id}")
     suspend fun programForId(

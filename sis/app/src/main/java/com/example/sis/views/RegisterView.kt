@@ -23,6 +23,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.sis.R
 import com.example.sis.datamodels.program.Program
+import com.example.sis.datamodels.program.ProgramById
 import com.example.sis.logic.logicProgram.ProgramResult
 import com.example.sis.logic.logicProgram.programList
 import com.example.sis.logic.user.logicUser.RegisterResult
@@ -40,7 +41,7 @@ fun RegisterView(
     var birthdate by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var selectedProgram by remember { mutableStateOf<Program?>(null) }
+    var selectedProgram by remember { mutableStateOf<ProgramById?>(null) }
     var code by remember { mutableStateOf("") }
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
@@ -48,7 +49,7 @@ fun RegisterView(
     var isLoading by remember { mutableStateOf(false) }
     var isLoadingPrograms by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
-    var programs by remember { mutableStateOf<List<Program>>(emptyList()) }
+    var programs by remember { mutableStateOf<List<ProgramById>>(emptyList()) }
     var programLoadError by remember { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()

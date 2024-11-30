@@ -189,28 +189,6 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
                             .padding(horizontal = 80.dp),
                         horizontalAlignment = Alignment.CenterHorizontally // Asegura la alineación centrada
                     ) {
-                        /*Button(
-                            onClick = {
-                                val roomID = roomDetails?.id ?: return@Button
-                                if (roomDetails?.status == "Reservada") {
-                                    showDialog = true // Mostrar el popup si la sala está reservada
-                                } else {
-                                    navController.navigate("reservarSala/$roomID/${userId}")
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp), // Altura consistente para los botones
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF0A5795),
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text(text = "Reservar")
-                        }*/
-
-                        //Spacer(modifier = Modifier.height(16.dp)) // Espacio entre los botones
-
                         Button(
                             onClick = {
                                 val roomID = roomDetails?.id ?: return@Button
