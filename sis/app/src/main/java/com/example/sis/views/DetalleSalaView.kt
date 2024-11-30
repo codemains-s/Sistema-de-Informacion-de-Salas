@@ -6,6 +6,7 @@ import RoomIdManager
 import UserIdManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
@@ -33,12 +35,15 @@ import com.example.sis.datamodels.room.Room
 import com.example.sis.logic.logicRoom.RoomResult
 import com.example.sis.logic.logicRoom.roomById
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.filled.Warning
+
 
 @Composable
 fun DetalleSalaView(salaId: String, navController: NavController) {
     var roomDetails by remember { mutableStateOf<Room?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -178,26 +183,51 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    Box(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 80.dp),
-                        contentAlignment = Alignment.Center
+                        horizontalAlignment = Alignment.CenterHorizontally // Asegura la alineación centrada
                     ) {
-                        Button(
+                        /*Button(
                             onClick = {
                                 val roomID = roomDetails?.id ?: return@Button
-                                navController.navigate("reservarSala/$roomID/${userId}")
+                                if (roomDetails?.status == "Reservada") {
+                                    showDialog = true // Mostrar el popup si la sala está reservada
+                                } else {
+                                    navController.navigate("reservarSala/$roomID/${userId}")
+                                }
                             },
-                            modifier = Modifier.height(50.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp), // Altura consistente para los botones
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF0A5795),
                                 contentColor = Color.White
                             )
                         ) {
                             Text(text = "Reservar")
+                        }*/
+
+                        //Spacer(modifier = Modifier.height(16.dp)) // Espacio entre los botones
+
+                        Button(
+                            onClick = {
+                                val roomID = roomDetails?.id ?: return@Button
+                                navController.navigate("horariosSala/$roomID")
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp), // Altura consistente para los botones
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF0A5795),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = "Ver horarios disponibles")
                         }
                     }
+
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -206,4 +236,76 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
             }
         }
     }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(Color(0xFF6A00F4), Color(0xFF00D4FF))
+                            ),
+                            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                        )
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "⚠ Sala no disponible",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
+                }
+            },
+            text = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFF1F1F1), shape = RoundedCornerShape(16.dp))
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Warning,
+                        contentDescription = "Advertencia",
+                        tint = Color(0xFF6A00F4),
+                        modifier = Modifier.size(50.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Esta sala está reservada en este momento. Por favor, intenta con otra sala.",
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp,
+                        color = Color(0xFF333333)
+                    )
+                }
+            },
+            confirmButton = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(Color(0xFF00D4FF), Color(0xFF6A00F4))
+                            ),
+                            shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                        )
+                        .clickable { showDialog = false }
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Aceptar",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+        )
+    }
+
 }

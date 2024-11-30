@@ -36,6 +36,7 @@ import com.example.sis.logic.logicUser.TokenManager
 import com.example.sis.ui.theme.SISTheme
 import com.example.sis.views.DetalleSalaView
 import com.example.sis.views.HorayRegisterView
+import com.example.sis.views.ListarHorariosSalaView
 import com.example.sis.views.ListarReservasSalaView
 import com.example.sis.views.ListarSalaView
 import com.example.sis.views.RegisterView
@@ -87,6 +88,13 @@ class MainActivity : ComponentActivity() {
                     composable ("listarReservas"){
                         ListarReservasSalaView(navController = navController)
                     }
+                    composable ("horariosSala/{roomID}"){ backStackEntry ->
+                        val salaId = backStackEntry.arguments?.getString("roomID")
+                        if (salaId != null) {
+                            ListarHorariosSalaView(id = salaId.toInt(), navController = navController)
+                        }
+                    }
+
                 }
             }
         }

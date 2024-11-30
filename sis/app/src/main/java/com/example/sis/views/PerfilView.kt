@@ -208,6 +208,24 @@ fun PerfilView(userId: String, navController: NavController) {
                         fontWeight = FontWeight.Bold
                     )
                 }
+                Spacer(modifier = Modifier.height(20.dp))
+                Button(
+                    onClick = {
+                        navController.navigate("listarReservas")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .height(48.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
+                ){
+                    Text(
+                        text = "Consultar reservas",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.example.sis.endpoints
 
+import com.example.sis.datamodels.DeleteRoomBooking
 import com.example.sis.datamodels.RoomBooking
+import com.example.sis.datamodels.RoomBookingId
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,18 +21,20 @@ interface RoomBooking_api {
     @GET("/all_roomBookings/")
     suspend fun allRoomBooking(
         @Header("Authorization") authHeader: String
-    ): Response<List<RoomBooking>>
+    ): Response<List<RoomBookingId>>
 
 
 
     @GET("/roomBooking/{id}")
     suspend fun  getRoomBookingId(
-        @Path("id") id: Int
+        @Path("id") id: Int,
+
     )
 
     @DELETE("/delete_roomBooking/{id}")
     suspend fun deleteRoomBookingId(
-        @Path("id") id: Int
-    )
+        @Path("id") id: Int,
+        @Header("Authorization") authHeader: String
+    ): Response<DeleteRoomBooking>
 }
 

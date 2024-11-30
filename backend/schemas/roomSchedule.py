@@ -6,6 +6,7 @@ class RoomSchedule(BaseModel):
     hour_start : str
     hour_end : str
     day_of_week : str
+    status : str
 
 class RoomScheduleOut(RoomSchedule):
     id : int

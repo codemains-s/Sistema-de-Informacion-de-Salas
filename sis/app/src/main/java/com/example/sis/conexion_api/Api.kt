@@ -2,13 +2,14 @@ package com.example.sis.conexion_api
 
 import com.example.sis.endpoints.Program_api
 import com.example.sis.endpoints.RoomBooking_api
+import com.example.sis.endpoints.RoomSchedule_api
 import com.example.sis.endpoints.Room_api
 import com.example.sis.endpoints.User_api
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiService {
-    private var baseUrl = "http://192.168.29.176:8000/" // Default IP
+    private var baseUrl = "http://192.168.1.109:8000/" // Default IP
 
     private val retrofit: Retrofit
         get() = Retrofit.Builder()
@@ -44,6 +45,10 @@ object ApiService {
 
     val roomBookingApi: RoomBooking_api by lazy {
         retrofit.create(RoomBooking_api::class.java)
+    }
+
+    val roomScheduleApi: RoomSchedule_api by lazy {
+        retrofit.create(RoomSchedule_api::class.java)
     }
 
 

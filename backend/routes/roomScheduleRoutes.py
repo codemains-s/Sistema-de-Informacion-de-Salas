@@ -3,7 +3,9 @@ from schemas.roomSchedule import RoomSchedule, RoomScheduleOut
 from config.db import get_db
 from sqlalchemy.orm import Session
 from security.seguridad import Portador
-from controllers.roomScheduleController import create_room_schedule, all_room_schedules, get_room_schedule_by_id, update_room_schedule, delete_room_schedule
+from controllers.roomScheduleController import (create_room_schedule, all_room_schedules, 
+                                                get_room_schedule_by_id, update_room_schedule, 
+                                                delete_room_schedule, get_room_schedule_by_room_id)
 
 router = APIRouter()
 
@@ -18,6 +20,11 @@ def create_room_schedule_route(room_schedule: RoomSchedule, db: Session = Depend
 def all_room_schedules_route(db: Session = Depends(get_db)):
     room_schedules = all_room_schedules(db)
     return room_schedules
+
+@router.get("/roomScheduleByRoomId/{id}", dependencies=[Depends(Portador())])
+def get_room_schedule_by_room_id_route(id: int, db: Session = Depends(get_db)):
+    room_schedule = get_room_schedule_by_room_id(id, db)
+    return room_schedule
 
 # Get room schedule by id
 @router.get("/roomSchedule/{id}", dependencies=[Depends(Portador())])

@@ -281,7 +281,7 @@ fun HorayRegisterView(
                                                 booking_date = selectedDate,
                                                 start_time = horaInicio,
                                                 end_time = horaFin,
-                                                status = "En curso..."
+                                                status = "Reservada"
                                             )
                                         }) {
                                             is RegisterBookingResult.Success -> {

@@ -76,12 +76,11 @@ class RoomSchedule(Base): # Listo ---------------------------------------------
     __tablename__ = 'room_schedule'
     
     id = Column(Integer, primary_key=True)
-    idRoom = Column(Integer, ForeignKey('rooms.id'), nullable=False)
+    room_id = Column(Integer, ForeignKey('rooms.id'), nullable=False)
     hour_start = Column(String(50))  # Formato "HH:MM"
     hour_end = Column(String(50))    # Formato "HH:MM"
-    dayOfWeek = Column(String(50))    # 1-7 para Lunes-Domingo
-    
-    # Relación
+    day_of_week = Column(String(50))    # 1-7 para Lunes-Domingo
+    status = Column(String(50))
     room = relationship('Room', back_populates='room_schedules')
 
 class CompletedHours(Base):
