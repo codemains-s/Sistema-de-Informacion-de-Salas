@@ -18,7 +18,7 @@ interface RoomSchedule_api {
 
     @GET("/all_roomSchedule")
     suspend fun allRoomSchedule(
-        @Header("Authorization") authHeader: String
+
     ): Response<List<RoomScheduleId>>
 
     @GET("/roomSchedule/{id}")
@@ -29,7 +29,7 @@ interface RoomSchedule_api {
     @GET("/roomScheduleByRoomId/{id}")
     suspend fun getRoomScheduleByRoomId(
         @Path("id") id: Int,
-        @Header("Authorization")authHeader: String
+
     ): Response<List<RoomScheduleId>>
 
 }

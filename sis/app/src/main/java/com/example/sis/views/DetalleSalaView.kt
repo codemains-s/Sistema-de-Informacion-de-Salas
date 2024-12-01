@@ -285,5 +285,5 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
             }
         )
     }
-
 }
+

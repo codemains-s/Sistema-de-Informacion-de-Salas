@@ -27,14 +27,14 @@ def create_new_room(room: Room, db: Session = Depends(get_db)):
 
 
 # Get all rooms
-@router.get("/all_rooms/", dependencies=[Depends(Portador())])
+@router.get("/all_rooms/")
 def get_all_rooms(db: Session = Depends(get_db)):
     rooms = all_rooms(db)
     return rooms
 
 
 # Get room by id
-@router.get("/room_by_id", dependencies=[Depends(Portador())])
+@router.get("/room_by_id")
 def get_room_by_id_endpoint(id: int, db: Session = Depends(get_db)):
     room = get_room_by_id(id, db)
     if room is None:
@@ -43,7 +43,7 @@ def get_room_by_id_endpoint(id: int, db: Session = Depends(get_db)):
 
 
 # Get room by name
-@router.get("/room_by_name/", dependencies=[Depends(Portador())])
+@router.get("/room_by_name/")
 def get_room_by_name_endpoint(name: str, db: Session = Depends(get_db)):
     room = get_room_by_name(name, db)
     if room is None:
@@ -52,7 +52,7 @@ def get_room_by_name_endpoint(name: str, db: Session = Depends(get_db)):
 
 
 # Get room by id
-@router.get("/room_by_id/", dependencies=[Depends(Portador())])
+@router.get("/room_by_id/")
 def get_room_by_name(id: int, db: Session = Depends(get_db)):
     room = get_room_by_id(id, db)
     if room is None:

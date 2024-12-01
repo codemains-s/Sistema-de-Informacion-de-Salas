@@ -18,7 +18,6 @@ interface Program_api {
 
     @GET("/all_programs/")
     suspend fun allPrograms(
-        @Header("Authorization") authHeader: String
     ): List<ProgramById>
 
     @GET("/program/{id}")

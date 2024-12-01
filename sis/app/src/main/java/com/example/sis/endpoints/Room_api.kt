@@ -16,7 +16,7 @@ interface Room_api {
 
     @GET("/all_rooms/")
     suspend fun get_rooms(
-        @Header("Authorization") authHeader: String
+
     ): Response<List<Room>>
 
     @GET("/room_by_name/")
@@ -24,7 +24,7 @@ interface Room_api {
 
     @GET("/room_by_id/")
     suspend fun get_room_by_id(@Query("id") id: Int,
-                               @Header("Authorization") authHeader: String
+
     ): Response<Room>
 
 }

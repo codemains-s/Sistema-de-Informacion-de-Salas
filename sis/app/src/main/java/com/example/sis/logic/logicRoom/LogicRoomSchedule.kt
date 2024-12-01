@@ -47,11 +47,8 @@ suspend fun roomScheduleListId(id: Int, context: Context): RoomScheduleResult {
     val token = TokenManager(context).getToken()
     return withContext(Dispatchers.IO) {
         try {
-            if (token.isNullOrEmpty()) {
-                return@withContext RoomScheduleResult.Error("Token no disponible")
-            }
 
-            val response: Response<List<RoomScheduleId>> = ApiService.roomScheduleApi.getRoomScheduleByRoomId(id, "Bearer $token")
+            val response: Response<List<RoomScheduleId>> = ApiService.roomScheduleApi.getRoomScheduleByRoomId(id)
 
             if (response.isSuccessful) {
                 response.body()?.let { roomSchedules ->

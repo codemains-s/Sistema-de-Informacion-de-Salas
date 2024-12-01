@@ -9,7 +9,7 @@ from controllers.programController import (create_program, all_programs,
 
 router = APIRouter()
 
-@router.post("/new_program/")
+@router.post("/new_program/", dependencies=[Depends(Portador())])
 def new_program(program: Program, db: Session = Depends(get_db)):
     exist = exist_program_by_name(program.name, db)
     if exist:

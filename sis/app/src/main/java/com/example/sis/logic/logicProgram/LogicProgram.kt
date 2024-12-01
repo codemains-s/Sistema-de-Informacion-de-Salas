@@ -4,9 +4,8 @@ import android.content.Context
 import com.example.sis.conexion_api.ApiService
 import com.example.sis.datamodels.program.Program
 import com.example.sis.datamodels.program.ProgramById
-import com.example.sis.logic.logicRoom.RoomResult
 import com.example.sis.logic.logicUser.TokenManager
-import com.example.sis.logic.user.logicUser.RegisterResult
+import exceptionsAlert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -15,7 +14,7 @@ sealed class ProgramRegister {
     data class Success(val programs: Program) : ProgramRegister()
     data class Error(val message: String) : ProgramRegister()
 }
-suspend fun registerProgram(name: String, description: String, context: Context): ProgramRegister{
+suspend fun registerProgram(name: String, description: String, context: Context): ProgramRegister {
     val token = TokenManager(context).getToken()
     return withContext(Dispatchers.IO) {
         try {
@@ -31,14 +30,19 @@ suspend fun registerProgram(name: String, description: String, context: Context)
             }
 
         } catch (e: HttpException) {
-            ProgramRegister.Error("Error en la API: ${e.message()}")
+            if (e.code() == 403) {
+                // Verificamos si el error es un 403 (permiso denegado)
+                if (e.message()?.contains("No cuentas con permisos") == true) {
+                    exceptionsAlert(context) // Mostrar el popup cuando no hay permisos
+                }
+            }
+            ProgramRegister.Error("No tienes los permisos necesarios")
         } catch (e: Exception) {
-            ProgramRegister.Error(e.message ?: "Error desconocido")
-        } as ProgramRegister
+            exceptionsAlert(context) // Mostrar el popup en caso de cualquier otro error
+            ProgramRegister.Error("No tienes los permisos necesarios")
+        }
     }
 }
-
-
 
 
 sealed class ProgramResult {
@@ -50,19 +54,18 @@ suspend fun programList(context: Context): ProgramResult {
     val token = TokenManager(context).getToken()
     return withContext(Dispatchers.IO) {
         try {
-            if (token.isNullOrEmpty()) {
-                return@withContext ProgramResult.Error("Token no disponible")
-            }
-            val programs: List<ProgramById> = ApiService.programApi.allPrograms("Bearer $token")
+            val programs: List<ProgramById> = ApiService.programApi.allPrograms()
 
             if (programs.isEmpty()) {
                 return@withContext ProgramResult.Error("No se encontraron programas")
             }
             ProgramResult.Success(programs)
         } catch (e: HttpException) {
-            ProgramResult.Error("Error en la API: ${e.message()}")
+            ProgramResult.Error("No cuentas con los permisos necesarios")
         } catch (e: Exception) {
+
             ProgramResult.Error(e.message ?: "Error desconocido")
-        } as ProgramResult
+        }
     }
 }
+

@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import os
 from models.tables import Role
 from models.tables import Program
+from fastapi.security import OAuth2PasswordBearer
 
 load_dotenv(".env")
 
@@ -202,3 +203,23 @@ def delete_user(user_id: int, db):
 
     db.commit()
     return user
+
+
+
+
+def get_user_role(token: str = Depends(OAuth2PasswordBearer(tokenUrl="login")), db=None):
+    payload = validate_token(token)  # Decodificas el token como ya lo haces en `validate_token`
+    role_id = payload.get("role_id")  # Extraemos el `role_id` del token
+    
+    # Obtenemos el rol del usuario desde la base de datos
+    role = db.query(Role).filter(Role.id == role_id).first()
+    if not role:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Rol no encontrado"
+        )
+    return role.name  # Retornamos el nombre del rol (Coordinator o Monitor)
+
+
+
+

@@ -72,17 +72,13 @@ fun CustomBottomAppBar(navController: NavController) {
                     )
                 }
 
-                // Dropdown menu with options
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier
                         .background(
-                            color = Color(0xFFF2C663),  // Bright Yellow for a futuristic look
-                            shape = RoundedCornerShape(16.dp)
+                            color = Color(0xFFF2C663),
                         )
-                        //.shadow(10.dp, shape = RoundedCornerShape(16.dp)),
-                    //offset = DpOffset(x = (-20).dp, y = (-10).dp)
                 ) {
                     // Primer elemento del menú
                     Box(

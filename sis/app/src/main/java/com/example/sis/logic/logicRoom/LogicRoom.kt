@@ -18,11 +18,8 @@ suspend fun roomList(context: Context): RoomResult {
     val token = TokenManager(context).getToken()
     return withContext(Dispatchers.IO) {
         try {
-            if (token.isNullOrEmpty()) {
-                return@withContext RoomResult.Error("Token no disponible")
-            }
 
-            val response: Response<List<Room>> = ApiService.roomApi.get_rooms("Bearer $token")
+            val response: Response<List<Room>> = ApiService.roomApi.get_rooms()
 
             if (response.isSuccessful) {
                 response.body()?.let { rooms ->
@@ -43,11 +40,8 @@ suspend fun roomById(context: Context, roomId: Int): RoomResult {
     val token = TokenManager(context).getToken()
     return withContext(Dispatchers.IO) {
         try {
-            if (token.isNullOrEmpty()) {
-                return@withContext RoomResult.Error("Token no disponible")
-            }
 
-            val response: Response<Room> = ApiService.roomApi.get_room_by_id(roomId,"Bearer $token")
+            val response: Response<Room> = ApiService.roomApi.get_room_by_id(roomId)
 
             if (response.isSuccessful) {
                 response.body()?.let { room ->

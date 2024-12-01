@@ -1,0 +1,10 @@
+<!-- Futuristic popup background -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="#00FF00"
+        android:endColor="#003300"
+        android:angle="45"/>
+    <corners android:radius="16dp"/>
+    <stroke android:color="#00FF00" android:width="3dp"/>
+    <padding android:left="20dp" android:top="20dp" android:right="20dp" android:bottom="20dp"/>
+</shape>

@@ -16,12 +16,12 @@ def create_room_schedule_route(room_schedule: RoomSchedule, db: Session = Depend
     return RoomSchedule(**new_room_schedule.__dict__)
 
 # Get all room schedules
-@router.get("/all_roomSchedule/", dependencies=[Depends(Portador())])
+@router.get("/all_roomSchedule/")
 def all_room_schedules_route(db: Session = Depends(get_db)):
     room_schedules = all_room_schedules(db)
     return room_schedules
 
-@router.get("/roomScheduleByRoomId/{id}", dependencies=[Depends(Portador())])
+@router.get("/roomScheduleByRoomId/{id}")
 def get_room_schedule_by_room_id_route(id: int, db: Session = Depends(get_db)):
     room_schedule = get_room_schedule_by_room_id(id, db)
     return room_schedule
