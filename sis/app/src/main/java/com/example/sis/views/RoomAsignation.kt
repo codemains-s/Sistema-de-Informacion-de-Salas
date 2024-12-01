@@ -111,7 +111,6 @@ fun HorayRegisterView(
     var errorMessage by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val calendar = Calendar.getInstance()
-    val contextPicker = LocalContext.current
 
     val datePickerDialog = android.app.DatePickerDialog(
         context,

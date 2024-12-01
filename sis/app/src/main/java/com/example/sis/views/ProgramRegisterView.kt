@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,7 +23,6 @@ import com.example.sis.logic.logicProgram.ProgramRegister
 import com.example.sis.logic.logicProgram.registerProgram
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProgramRegisterView(
     navController: NavController,
@@ -67,9 +66,13 @@ fun ProgramRegisterView(
 
                 Text(
                     text = "Registrar Programa",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = Color(0xFF0A5795), // Color para el título
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace,
+                        fontStyle = FontStyle.Italic
+                    ),
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 30.dp)
                 )
 
                 // Campo para el Nombre del Programa
@@ -124,7 +127,7 @@ fun ProgramRegisterView(
                     if (isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
-                            color = Color.White
+                            color = Color.Gray
                         )
                     } else {
                         Text("Registrar")
