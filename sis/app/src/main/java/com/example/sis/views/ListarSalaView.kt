@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,9 +43,9 @@ fun ListarSalaView(
     var filteredSalas by remember { mutableStateOf<List<Room>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var filterByAvailable by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
-
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -75,10 +74,8 @@ fun ListarSalaView(
     }
 
     Scaffold(
-
-        topBar = {CustomTopAppBar(navController)},
-        bottomBar = {CustomBottomAppBar(navController)}
-
+        topBar = { CustomTopAppBar(navController) },
+        bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -90,7 +87,10 @@ fun ListarSalaView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(80.dp).padding(10.dp), color = Color(0xFFF2C663))
+                CircularProgressIndicator(
+                    modifier = Modifier.size(80.dp).padding(10.dp),
+                    color = Color(0xFFF2C663)
+                )
             } else if (errorMessage != null) {
                 Text(
                     text = errorMessage ?: "Error desconocido",
@@ -100,54 +100,70 @@ fun ListarSalaView(
                 )
             } else {
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xffffffff)
-                    )
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xffffffff))
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
                     ) {
-                        TextField(
-                            value = searchText,
-                            onValueChange = { newText ->
-                                setSearchText(newText)
-                            },
-                            placeholder = { Text(text = "ej: sala j", color = Color.Black) },
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp),
-                            singleLine = true,
-                            colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color(0xFFD9D9D9),
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                            ),
-                            textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Button(
-                            onClick = {
-                                filteredSalas = allSalas
-                                filterSalas(searchText, allSalas, setFilteredSalas = {
-                                    filteredSalas = it
-                                })
-                            },
-                            modifier = Modifier.height(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF0A5795),
-                                contentColor = Color.White
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            TextField(
+                                value = searchText,
+                                onValueChange = { newText ->
+                                    setSearchText(newText)
+                                },
+                                placeholder = { Text(text = "ej: sala j", color = Color.Black) },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(48.dp),
+                                singleLine = true,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    containerColor = Color(0xFFD9D9D9),
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                ),
+                                textStyle = LocalTextStyle.current.copy(color = Color.Black),
+                                shape = RoundedCornerShape(12.dp)
                             )
-                        ) {
-                            Text(text = "Buscar")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Button(
+                                onClick = {
+                                    filteredSalas = allSalas
+                                    filterSalas(searchText, filterByAvailable, allSalas) {
+                                        filteredSalas = it
+                                    }
+                                },
+                                modifier = Modifier.height(48.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF0A5795),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(text = "Buscar")
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = filterByAvailable,
+                                onCheckedChange = { isChecked ->
+                                    filterByAvailable = isChecked
+                                    filterSalas(searchText, filterByAvailable, allSalas) {
+                                        filteredSalas = it
+                                    }
+                                }
+                            )
+                            Text(
+                                text = "Disponibles",
+                                fontSize = 16.sp,
+                                color = Color.Black
+                            )
                         }
                     }
-
                 }
 
                 filteredSalas.forEach { sala ->
@@ -195,15 +211,13 @@ fun ListarSalaView(
 
 private fun filterSalas(
     searchText: String,
+    filterByAvailable: Boolean,
     allSalas: List<Room>,
     setFilteredSalas: (List<Room>) -> Unit
 ) {
-    val filteredSalas = if (searchText.isEmpty()) {
-        allSalas
-    } else {
-        allSalas.filter { sala ->
-            sala.name.lowercase().contains(searchText.lowercase())
-        }
+    val filteredSalas = allSalas.filter { sala ->
+        (searchText.isEmpty() || sala.name.lowercase().contains(searchText.lowercase())) &&
+                (!filterByAvailable || sala.status == "Disponible")
     }
     setFilteredSalas(filteredSalas)
 }
