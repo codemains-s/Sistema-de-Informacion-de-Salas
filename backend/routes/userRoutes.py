@@ -16,6 +16,8 @@ from controllers.userController import (
     get_user_by_id,
     password_context,
 )
+from fastapi.responses import StreamingResponse
+from controllers.reportController import generate_user_report
 
 
 router = APIRouter()
@@ -115,3 +117,22 @@ def update_user_by_id(user_id: int, user: UserEdit, db: Session = Depends(get_db
     if not user_updated:
         return {"message": "User not exist"}
     return user_updated
+
+
+# Endpoint para generar el reporte de usuario
+@router.get("/user_report/{user_id}", dependencies=[Depends(Portador())])
+def user_report(user_id: int, db: Session = Depends(get_db)):
+    # Llama al controlador para generar el reporte
+    report = generate_user_report(user_id, db)
+    if report is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Configura la respuesta para el archivo Excel
+    headers = {
+        "Content-Disposition": f"attachment; filename=user_report_{user_id}.xlsx"
+    }
+    return StreamingResponse(
+        report,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers=headers,
+    )
