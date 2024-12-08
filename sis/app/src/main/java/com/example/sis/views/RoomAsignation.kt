@@ -44,7 +44,6 @@ import java.util.Calendar
 fun HorayRegisterView(
     navController: NavController,
     roomId: Int
-
 ) {
     var userDetails by remember { mutableStateOf<User?>(null) }
     var roomDetails by remember { mutableStateOf<Room?>(null) }

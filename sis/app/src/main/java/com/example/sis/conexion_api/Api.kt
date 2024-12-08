@@ -22,13 +22,12 @@ object ApiService {
         baseUrl = "http://$ip:8000/"
     }
 
-
     // API de usuario
     val userApi: User_api by lazy {
         retrofit.create(User_api::class.java)
     }
 
-    // API de habitaciones
+    // API de salas
     val roomApi: Room_api by lazy {
         retrofit.create(Room_api::class.java)
     }
@@ -50,6 +49,4 @@ object ApiService {
     val roomScheduleApi: RoomSchedule_api by lazy {
         retrofit.create(RoomSchedule_api::class.java)
     }
-
-
 }

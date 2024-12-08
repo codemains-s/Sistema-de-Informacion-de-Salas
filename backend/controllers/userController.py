@@ -150,6 +150,20 @@ def get_token_by_id(user_id: int, db):
 
 def get_all_users(db):
     users = db.query(User).all()
+    # retornar solo nombre, email, programa
+    users = [
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "program": db.query(Program)
+            .filter(Program.id == user.program_id)
+            .first()
+            .name,
+        }
+        for user in users
+    ]
+
     return users
 
 
@@ -205,21 +219,18 @@ def delete_user(user_id: int, db):
     return user
 
 
-
-
-def get_user_role(token: str = Depends(OAuth2PasswordBearer(tokenUrl="login")), db=None):
-    payload = validate_token(token)  # Decodificas el token como ya lo haces en `validate_token`
+def get_user_role(
+    token: str = Depends(OAuth2PasswordBearer(tokenUrl="login")), db=None
+):
+    payload = validate_token(
+        token
+    )  # Decodificas el token como ya lo haces en `validate_token`
     role_id = payload.get("role_id")  # Extraemos el `role_id` del token
-    
+
     # Obtenemos el rol del usuario desde la base de datos
     role = db.query(Role).filter(Role.id == role_id).first()
     if not role:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Rol no encontrado"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Rol no encontrado"
         )
     return role.name  # Retornamos el nombre del rol (Coordinator o Monitor)
-
-
-
-

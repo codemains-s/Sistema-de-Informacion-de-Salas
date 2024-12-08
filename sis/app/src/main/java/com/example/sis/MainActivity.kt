@@ -36,6 +36,7 @@ import com.example.sis.views.HorayRegisterView
 import com.example.sis.views.ListarHorariosSalaView
 import com.example.sis.views.ListarReservasSalaView
 import com.example.sis.views.ListarSalaView
+import com.example.sis.views.ListarUsuarioView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
 import com.example.sis.views.PerfilView
@@ -94,6 +95,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("registrarPrograma"){
                         ProgramRegisterView(navController = navController)
+                    }
+                    composable("listarUsuarios"){
+                        ListarUsuarioView(navController = navController)
                     }
 
                 }

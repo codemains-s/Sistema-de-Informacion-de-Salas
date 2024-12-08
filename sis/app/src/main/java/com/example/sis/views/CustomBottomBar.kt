@@ -33,7 +33,7 @@ fun CustomBottomAppBar(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier.fillMaxWidth()
         ) {
-            IconButton(onClick = { navController.navigate("listarSalas") }) {
+            IconButton(onClick = { navController.navigate("listarSalas/${userIdManager.getUserId()}") }) {
                 Image(
                     painter = painterResource(id = R.drawable.home),
                     contentDescription = "Home",
@@ -104,6 +104,34 @@ fun CustomBottomAppBar(navController: NavController) {
                             },
                             onClick = {
                                 navController.navigate("registrarPrograma")
+                                expanded = false
+                            }
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                            .background(
+                                color = Color(0xFF0A5795),
+                                shape = RoundedCornerShape(20.dp) // More rounded buttons
+                            )
+
+                    ) {
+                        DropdownMenuItem(
+                            colors = MenuDefaults.itemColors(
+                                textColor = Color.White,
+                                leadingIconColor = Color.White
+                            ),
+                            text = {
+                                Text(
+                                    "Ver monitores",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
+                            onClick = {
+                                navController.navigate("listarUsuarios")
                                 expanded = false
                             }
                         )
