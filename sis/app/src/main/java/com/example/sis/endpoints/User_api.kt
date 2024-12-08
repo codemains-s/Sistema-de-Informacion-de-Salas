@@ -25,6 +25,11 @@ interface User_api {
         @Body user: UserLogin
     ): UserResponse
 
+    @GET("/all_users/")
+    suspend fun get_users(
+        @Header("Authorization") authHeader: String
+    ): Response<List<User>>
+
     @GET("/user_by_id/")
     suspend fun get_user_by_id(@Query("id") id: Int,
                                @Header("Authorization") authHeader: String
