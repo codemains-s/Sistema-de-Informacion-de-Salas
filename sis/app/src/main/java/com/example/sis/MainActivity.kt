@@ -96,9 +96,10 @@ class MainActivity : ComponentActivity() {
                     composable("registrarPrograma"){
                         ProgramRegisterView(navController = navController)
                     }
-                    composable ("listarUsuarios"){
+                    composable("listarUsuarios"){
                         ListarUsuarioView(navController = navController)
                     }
+
                 }
             }
         }

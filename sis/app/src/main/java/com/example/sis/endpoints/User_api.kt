@@ -5,6 +5,8 @@ import com.example.sis.datamodels.user.User
 import com.example.sis.datamodels.user.UserCreate
 import com.example.sis.datamodels.user.UserLogin
 import com.example.sis.datamodels.user.UserResponse
+import com.example.sis.datamodels.user.UserTable
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -34,5 +36,16 @@ interface User_api {
     suspend fun get_user_by_id(@Query("id") id: Int,
                                @Header("Authorization") authHeader: String
     ): Response<User>
+
+    @GET("/all_users")
+    suspend fun get_all_users(
+        @Header("Authorization") authHeader: String
+    ): Response<List<UserTable>>
+
+    @GET("/user_report/{user_id}")
+    suspend fun downloadUserReport(
+        @Path("user_id") userId: String,
+        @Header("Authorization") authHeader: String
+    ): Response<ResponseBody>
 
 }
