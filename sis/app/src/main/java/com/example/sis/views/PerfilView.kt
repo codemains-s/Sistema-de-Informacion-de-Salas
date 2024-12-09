@@ -2,8 +2,8 @@ package com.example.sis.views
 
 import CustomBottomAppBar
 import CustomTopAppBar
+import UserRoleIdManager
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -34,14 +34,18 @@ fun PerfilView(userId: String, navController: NavController) {
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val userRoleIdManager = UserRoleIdManager(context)
 
-    LaunchedEffect(userId) {
+        LaunchedEffect(userId) {
         coroutineScope.launch {
             try {
                 isLoading = true
                 errorMessage = null
 
                 val result = userById(context, userId.toInt())
+
+                println("-------------------------------------------- ${result}")
+
                 result.fold(
                     onSuccess = { user ->
                         userDetails = user
@@ -177,90 +181,64 @@ fun PerfilView(userId: String, navController: NavController) {
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = buildAnnotatedString {
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                    append("Cumpleaños: ")
-                                }
-                                append("${userDetails?.birthdate ?: "Sin cumpleaños"}")
-                            },
-                            fontSize = 14.sp,
-                            color = Color.Black
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp)) // Espacio entre la tarjeta y el botón
+                if (userRoleIdManager.getUserRoleId() == "1") {
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = { navController.navigate("listarSalas") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
-                ) {
-                    Text(
-                        text = "Listar Salas",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Button(
-                    onClick = {
-                        navController.navigate("listarReservas")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
-                ){
-                    Text(
-                        text = "Consultar reservas",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Button(
-                    onClick = {
-                        navController.navigate("registrarPrograma")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
-                ){
-                    Text(
-                        text = "Registrar programa",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Button(
-                    onClick = {
-                        navController.navigate("listarUsuarios")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
-                ){
-                    Text(
-                        text = "Listado de monitores",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Button(
+                        onClick = { navController.navigate("listarSalas") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
+                    ) {
+                        Text(
+                            text = "Listar Salas",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = {
+                            navController.navigate("listarReservas")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
+                    ){
+                        Text(
+                            text = "Consultar reservas",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = {
+                            navController.navigate("registrarPrograma")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A5795))
+                    ){
+                        Text(
+                            text = "Registrar programa",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }

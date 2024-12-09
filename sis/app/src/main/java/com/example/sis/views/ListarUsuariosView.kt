@@ -37,7 +37,7 @@ import com.example.sis.logic.logicUser.TokenManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListarUsuarioView(
+fun ListarUsuariosView(
     navController: NavController,
 ) {
     val (searchText, setSearchText) = remember { mutableStateOf("") }
@@ -229,8 +229,22 @@ fun ListarUsuarioView(
                                     contentDescription = "Descargar Reporte",
                                     modifier = Modifier.size(24.dp)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(3.dp))
                                 Text(text = "Descargar Reporte")
+                            }
+                            Button(
+                                onClick = {
+                                    navController.navigate("listarReservas")
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF0A5795),
+                                    contentColor = Color.White
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                            ) {
+                                Text(text = "Asignar Sala")
                             }
                         }
                     }

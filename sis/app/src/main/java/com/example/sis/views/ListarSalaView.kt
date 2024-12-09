@@ -36,7 +36,7 @@ import com.example.sis.logic.logicRoom.roomList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListarSalaView(
-    navController: NavController,
+    navController: NavController
 ) {
     val (searchText, setSearchText) = remember { mutableStateOf("") }
     var allSalas by remember { mutableStateOf<List<Room>>(emptyList()) }
