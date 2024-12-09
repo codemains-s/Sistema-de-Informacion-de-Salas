@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,9 +50,8 @@ import com.example.sis.ui.theme.SISTheme
 @Composable
 fun RegistrarHorasView(
     navController: NavController,
+    userName: String
 ) {
-    var inputText by remember { mutableStateOf("") }
-
     LaunchedEffect(Unit) {
     }
 
@@ -106,18 +104,14 @@ fun RegistrarHorasView(
                         )
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        /*
-                            Este es un campo de pruebas para el nombre que se trae de la base de datos
-                         */
-                        val defaultUsername = "Mateo"
+                        // Campos para el nobmre de usuario
                         Text(
                             text = "Nombre",
                             color = Color.Black,
                             modifier = Modifier.align(Alignment.Start)
                         )
-
                         Text(
-                            text = defaultUsername, // Muestra el nombre de usuario por defecto
+                            text = userName,
                             color = Color.Gray,
                             fontSize = 16.sp,
                             modifier = Modifier
@@ -187,7 +181,7 @@ fun RegistrarHorasView(
                                 .padding(16.dp)
                         ) {
                             Text(
-                                text = "Estatus",
+                                text = "Completado",
                                 color = Color.Black,
                                 modifier = Modifier.weight(1f)
                             )
@@ -231,6 +225,6 @@ fun RegistrarHorasView(
 fun PreviewMainScreenScreen() {
     SISTheme {
         val navController = rememberNavController()
-        RegistrarHorasView(navController = navController)
+        RegistrarHorasView(navController = navController, userName = "")
     }
 }

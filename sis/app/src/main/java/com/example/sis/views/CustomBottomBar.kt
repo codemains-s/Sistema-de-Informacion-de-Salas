@@ -47,13 +47,26 @@ fun CustomBottomAppBar(navController: NavController) {
                     modifier = Modifier.size(40.dp)
                 )
             }
-            IconButton(onClick = { navController.navigate("registrarHoras") }) {
+
+            /*IconButton(onClick = { navController.navigate("registrarHoras") }) {
+                Image(
+                    painter = painterResource(id = R.drawable.notification),
+                    contentDescription = "Notifications",
+                    modifier = Modifier.size(40.dp)
+                )
+            }*/
+
+
+            IconButton(onClick = { navController.navigate("firma") }) {
                 Image(
                     painter = painterResource(id = R.drawable.notification),
                     contentDescription = "Notifications",
                     modifier = Modifier.size(40.dp)
                 )
             }
+
+
+
             IconButton(onClick = { navController.navigate("profile/${userIdManager.getUserId()}") }) {
                 Image(
                     painter = painterResource(id = R.drawable.account),
