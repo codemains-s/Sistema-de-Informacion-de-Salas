@@ -7,6 +7,7 @@ class CompletedHour(BaseModel):
     hour_completed: int
     date_register: str
     status: str
+    signature: str
     observations: str
 
 class CompletedHourOut(CompletedHour):

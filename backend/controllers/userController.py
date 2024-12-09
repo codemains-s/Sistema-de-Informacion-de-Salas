@@ -1,6 +1,7 @@
-from schemas.user import UserCreate, UserOut, UserEdit, UserUpdate
+from schemas.user import UserOut, UserUpdate
 from models.tables import User
-from controllers.roleController import get_role_by_name
+from controllers.roleController import get_role_by_name, exist_role_id
+
 from sqlalchemy import func, text
 from passlib.context import CryptContext
 from fastapi import HTTPException, status, Depends
@@ -76,6 +77,14 @@ def exist_token(email: str, password: str, db):
     if not user:
         return False
     return user.token
+
+def get_all_users_by_role_id(role_id: int, db):
+    users = db.query(User).filter(User.role_id == role_id).all()
+    if not exist_role_id(role_id, db):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Rol no encontrado"
+        )
+    return users
 
 
 def email_validation(email: str):
@@ -181,7 +190,6 @@ def update_user(user_id: int, update_user: UserUpdate, db) -> Optional[UserOut]:
         usr.role_id = update_user.role_id
         usr.name = update_user.name
         usr.email = update_user.email
-        usr.birthdate = update_user.birthdate
         usr.phone = update_user.phone
         usr.token = jwt.encode(payload, secret_key, algorithm)
         db.commit()

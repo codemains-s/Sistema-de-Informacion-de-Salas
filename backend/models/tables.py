@@ -24,7 +24,6 @@ class User(Base): # Listo ---------------------------------------------
     email = Column(String(100), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     token = Column(String(255))
-    birthdate = Column(String(100))
     phone = Column(String(20))
     
     # Relaciones
@@ -92,6 +91,7 @@ class CompletedHours(Base):
     hour_completed = Column(Integer)
     date_register = Column(String(100), default=datetime.utcnow)
     status = Column(String(50))
+    signature = Column(String(1023))
     observations = Column(String(1023))
     
     # Relaciones

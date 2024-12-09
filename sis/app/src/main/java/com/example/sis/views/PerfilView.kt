@@ -3,6 +3,7 @@ package com.example.sis.views
 import CustomBottomAppBar
 import CustomTopAppBar
 import UserRoleIdManager
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -26,6 +27,7 @@ import com.example.sis.datamodels.user.User
 import com.example.sis.logic.user.logicUser.userById
 import kotlinx.coroutines.launch
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun PerfilView(userId: String, navController: NavController) {
     var userDetails by remember { mutableStateOf<User?>(null) }

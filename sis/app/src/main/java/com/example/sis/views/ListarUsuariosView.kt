@@ -33,7 +33,10 @@ import androidx.compose.ui.text.withStyle
 import com.example.app.utils.UserReportResult
 import com.example.app.utils.downloadUserReport
 import com.example.sis.R
+import com.example.sis.datamodels.user.User
+import com.example.sis.logic.logicUser.AllUsersRoleIdResult
 import com.example.sis.logic.logicUser.TokenManager
+import com.example.sis.logic.logicUser.getAllUsersRoleId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,10 +44,11 @@ fun ListarUsuariosView(
     navController: NavController,
 ) {
     val (searchText, setSearchText) = remember { mutableStateOf("") }
-    var allUsers by remember { mutableStateOf<List<UserTable>>(emptyList()) }
-    var filteredUsers by remember { mutableStateOf<List<UserTable>>(emptyList()) }
+    var allUsers by remember { mutableStateOf<List<User>>(emptyList()) }
+    var filteredUsers by remember { mutableStateOf<List<User>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessagee by remember { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -53,21 +57,22 @@ fun ListarUsuariosView(
         coroutineScope.launch {
             try {
                 isLoading = true
-                errorMessage = null
+                showErrorDialog = false // Reinicia el estado del diálogo
 
-                val result = getAllUsers(context)
+                val result = getAllUsersRoleId(context)
                 when (result) {
-                    is AllUsersResult.Success -> {
+                    is AllUsersRoleIdResult.Success -> {
                         allUsers = result.users
                         filteredUsers = allUsers
                     }
-                    is AllUsersResult.Error -> {
-                        errorMessage = result.message
+                    is AllUsersRoleIdResult.Error -> {
+                        errorMessagee = result.message
+                        showErrorDialog = true // Muestra el diálogo en caso de error
                     }
                 }
-
             } catch (e: Exception) {
-                errorMessage = "Error al cargar las usuarios: ${e.message}"
+                errorMessagee = "Error al cargar los usuarios: ${e.message}"
+                showErrorDialog = true // Muestra el diálogo en caso de excepción
             } finally {
                 isLoading = false
             }
@@ -92,13 +97,6 @@ fun ListarUsuariosView(
                     modifier = Modifier.size(80.dp).padding(10.dp),
                     color = Color(0xFFF2C663)
                 )
-            } else if (errorMessage != null) {
-                Text(
-                    text = errorMessage ?: "Error desconocido",
-                    color = Color.Red,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
-                )
             } else {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -109,7 +107,6 @@ fun ListarUsuariosView(
                             .fillMaxWidth()
                             .padding(8.dp)
                     ) {
-
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             TextField(
                                 value = searchText,
@@ -250,18 +247,31 @@ fun ListarUsuariosView(
                     }
                 }
             }
+
+            // Mostrar el diálogo de error si ocurre un fallo
+            if (showErrorDialog) {
+                AlertDialog(
+                    onDismissRequest = { showErrorDialog = false },
+                    title = { Text(text = "Error!!!") },
+                    text = { Text(errorMessagee) },
+                    confirmButton = {
+                        Button(onClick = { showErrorDialog = false }) {
+                            Text("Aceptar")
+                        }
+                    }
+                )
+            }
         }
     }
 }
 
 private fun filterUsers(
     searchText: String,
-    allUsers: List<UserTable>,
-    setFilteredUsers: (List<UserTable>) -> Unit
+    allUsers: List<User>,
+    setFilteredUsers: (List<User>) -> Unit
 ) {
     val filteredUsers = allUsers.filter { user ->
         (searchText.isEmpty() || user.name.lowercase().contains(searchText.lowercase()))
     }
     setFilteredUsers(filteredUsers)
 }
-

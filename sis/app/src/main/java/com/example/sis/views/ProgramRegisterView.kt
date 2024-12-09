@@ -2,26 +2,30 @@ package com.example.sis.views
 
 import CustomBottomAppBar
 import CustomTopAppBar
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.sis.R
 import com.example.sis.logic.logicProgram.ProgramRegister
 import com.example.sis.logic.logicProgram.registerProgram
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+
 
 @Composable
 fun ProgramRegisterView(
@@ -34,8 +38,8 @@ fun ProgramRegisterView(
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     val context = LocalContext.current
+
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -43,94 +47,119 @@ fun ProgramRegisterView(
         bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .background(Color.White) // Fondo blanco para la vista principal
         ) {
+            // Fondo de la pantalla
+            Image(
+                painter = painterResource(id = R.drawable.ucaldas_fondo3), // Cambia por tu imagen de fondo
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            // Contenido principal
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()), // Permitir scroll si es necesario
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val textFieldShape = RoundedCornerShape(24.dp)
-                val textFieldColors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color(0xFF2196F3).copy(alpha = 0.9f), // Fondo azul
-                    focusedContainerColor = Color(0xFF2196F3), // Fondo azul cuando está enfocado
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent
-                )
-
-                Text(
-                    text = "Registrar Programa",
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontWeight = FontWeight.Black,
-                        fontFamily = FontFamily.Monospace,
-                        fontStyle = FontStyle.Italic
-                    ),
-                    color = Color.Black,
-                    modifier = Modifier.padding(bottom = 30.dp)
-                )
-
-                // Campo para el Nombre del Programa
-                TextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Nombre") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = textFieldShape,
-                    colors = textFieldColors
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Campo para la Descripción del Programa
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Descripción del programa") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = textFieldShape,
-                    colors = textFieldColors
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Botón para registrar
-                Button(
-                    onClick = {
-                        scope.launch {
-                            isLoading = true
-                            when (val result = registerProgram(name, description, context)) {
-                                is ProgramRegister.Success -> {
-                                    showSuccessDialog = true
-                                }
-                                is ProgramRegister.Error -> {
-                                    errorMessage = result.message
-                                    showErrorDialog = true
-                                }
-                            }
-                            isLoading = false
-                        }
-                    },
+                Card(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    enabled = name.isNotEmpty() && description.isNotEmpty() && !isLoading,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isLoading) Color.Gray else Color(0xFF0A5795),
-                        contentColor = Color.White
+                        .width(350.dp)
+                        .wrapContentHeight(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFF2C663) // Fondo del formulario
                     )
                 ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = Color.Gray
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Registrar Programa",
+                            color = Color.Black,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                    } else {
-                        Text("Registrar")
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        // Campo para el Nombre del Programa
+                        Text(
+                            text = "Nombre del programa",
+                            color = Color.Black,
+                            modifier = Modifier.align(Alignment.Start)
+                        )
+                        OutlinedTextField(
+                            value = name,
+                            onValueChange = { name = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Text
+                            ),
+                            textStyle = TextStyle(
+                                fontSize = 18.sp,
+                                color = Color.Black
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+
+                        // Campo para la Descripción del Programa
+                        Text(
+                            text = "Descripción del programa",
+                            color = Color.Black,
+                            modifier = Modifier.align(Alignment.Start)
+                        )
+                        OutlinedTextField(
+                            value = description,
+                            onValueChange = { description = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Text
+                            ),
+                            textStyle = TextStyle(
+                                fontSize = 18.sp,
+                                color = Color.Black
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        // Botón para registrar
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    isLoading = true
+                                    when (val result = registerProgram(name, description, context)) {
+                                        is ProgramRegister.Success -> {
+                                            showSuccessDialog = true
+                                        }
+                                        is ProgramRegister.Error -> {
+                                            errorMessage = result.message
+                                            showErrorDialog = true
+                                        }
+                                    }
+                                    isLoading = false
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 30.dp),
+                            enabled = name.isNotEmpty() && description.isNotEmpty() && !isLoading,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF0A5795)
+                            )
+                        ) {
+                            Text(
+                                text = if (isLoading) "Cargando..." else "Registrar",
+                                color = Color(0xFFF2C663)
+                            )
+                        }
                     }
                 }
             }
@@ -140,11 +169,7 @@ fun ProgramRegisterView(
                 AlertDialog(
                     onDismissRequest = { showSuccessDialog = false },
                     title = { Text(text = "Registro Exitoso") },
-                    text = {
-                        Column {
-                            Text("El programa se ha registrado correctamente.")
-                        }
-                    },
+                    text = { Text("El programa se ha registrado correctamente.") },
                     confirmButton = {
                         Button(
                             onClick = {
@@ -165,7 +190,7 @@ fun ProgramRegisterView(
                 AlertDialog(
                     onDismissRequest = { showErrorDialog = false },
                     title = { Text(text = "Error en el Registro") },
-                    text = { Text(text = errorMessage) },
+                    text = { Text(errorMessage) },
                     confirmButton = {
                         Button(onClick = { showErrorDialog = false }) {
                             Text("Aceptar")
