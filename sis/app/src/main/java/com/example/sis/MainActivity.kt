@@ -28,12 +28,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.sis.logic.logicUser.TokenManager
 import com.example.sis.ui.theme.SISTheme
 import com.example.sis.views.DetalleSalaView
+import com.example.sis.views.FirmaView
 import com.example.sis.views.HorayRegisterView
 import com.example.sis.views.ListarHorariosSalaView
 import com.example.sis.views.ListarReservasSalaView
@@ -68,7 +71,18 @@ class MainActivity : ComponentActivity() {
                             HorayRegisterView(navController = navController, roomId = roomID)
                         }
                     }
-                    composable("registrarHoras"){ RegistrarHorasView(navController = navController) }
+
+                    composable(
+                        route = "registrarHoras/{userName}",
+                        arguments = listOf(
+                            navArgument("userName") { type = NavType.StringType }
+                        )
+                    ) { backStackEntry ->
+                        val userName = backStackEntry.arguments?.getString("userName") ?: ""
+                        RegistrarHorasView(navController = navController, userName = userName)
+                    }
+
+                    composable("firma"){ FirmaView(navController = navController)}
 
                     composable("detalleSala/{salaId}") { backStackEntry ->
                         val salaId = backStackEntry.arguments?.getString("salaId")
