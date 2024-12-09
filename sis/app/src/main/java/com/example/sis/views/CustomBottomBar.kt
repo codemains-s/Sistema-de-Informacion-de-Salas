@@ -33,7 +33,7 @@ fun CustomBottomAppBar(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier.fillMaxWidth()
         ) {
-            IconButton(onClick = { navController.navigate("listarSalas/${userIdManager.getUserId()}") }) {
+            IconButton(onClick = { navController.navigate("listarSalas") }) {
                 Image(
                     painter = painterResource(id = R.drawable.home),
                     contentDescription = "Home",

@@ -191,7 +191,7 @@ fun LoginView(
                     Button(
                         onClick = {
                             showSuccessDialog = false
-                            navController.navigate("listarSalas") {
+                            navController.navigate("profile/${userId}") {
                                 popUpTo("login") { inclusive = true }
                             }
                         }

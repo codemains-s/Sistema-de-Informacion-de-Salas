@@ -2,19 +2,16 @@
 package com.example.sis.logic.user.logicUser
 
 import UserIdManager
+import UserRoleIdManager
 import android.content.Context
-import android.util.Log
 import com.example.sis.conexion_api.ApiService
-import com.example.sis.datamodels.room.Room
 import com.example.sis.datamodels.user.User
 import com.example.sis.datamodels.user.UserLogin
-import com.example.sis.logic.logicRoom.RoomResult
 import com.example.sis.logic.logicUser.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import org.json.JSONObject
-import retrofit2.Response
 
 
 sealed class LoginResult {
@@ -31,9 +28,11 @@ suspend fun loginUser(email: String, password: String, context: Context): LoginR
             if (response != null) {
                 val token = response.Token
                 val userId = response.userId
+                val userRoleId = response.roleId
 
                 TokenManager(context).saveToken(token)
                 UserIdManager(context).saveUserId(userId)
+                UserRoleIdManager(context).saveUserRoleId(userRoleId)
 
                 LoginResult.Success(token, userId)
             } else {
@@ -55,8 +54,6 @@ suspend fun loginUser(email: String, password: String, context: Context): LoginR
 }
 
 suspend fun userById(context: Context, userId: Int): Result<User> {
-
-    println("userId $userId")
 
     val token = TokenManager(context).getToken()
     if (token.isNullOrEmpty()) {

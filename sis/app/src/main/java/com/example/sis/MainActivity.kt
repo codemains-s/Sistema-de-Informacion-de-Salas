@@ -1,5 +1,7 @@
 package com.example.sis
 
+import ListarUsuariosView
+import UserIdManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,7 +38,6 @@ import com.example.sis.views.HorayRegisterView
 import com.example.sis.views.ListarHorariosSalaView
 import com.example.sis.views.ListarReservasSalaView
 import com.example.sis.views.ListarSalaView
-import com.example.sis.views.ListarUsuarioView
 import com.example.sis.views.RegisterView
 import com.example.sis.views.LoginView
 import com.example.sis.views.PerfilView
@@ -97,7 +98,7 @@ class MainActivity : ComponentActivity() {
                         ProgramRegisterView(navController = navController)
                     }
                     composable("listarUsuarios"){
-                        ListarUsuarioView(navController = navController)
+                        ListarUsuariosView(navController = navController)
                     }
 
                 }
@@ -121,6 +122,7 @@ fun MainScreen(navController: NavController) {
     val context = LocalContext.current
     var hasActiveSession by remember { mutableStateOf(false) }
     val tokenManager = TokenManager(context)
+    val userIdManager = UserIdManager(context)
 
     LaunchedEffect(Unit) {
         val savedToken = tokenManager.getToken()
@@ -141,7 +143,7 @@ fun MainScreen(navController: NavController) {
             // Botón de navegación con flecha futurista
             IconButton(
                 onClick = {
-                    navController.navigate("listarSalas") {
+                    navController.navigate("profile/${userIdManager.getUserId()}") {
                         popUpTo("login") { inclusive = true }
                     }
                 },

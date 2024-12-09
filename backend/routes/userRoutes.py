@@ -60,7 +60,7 @@ def login(request: UserLogin, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST, detail="Token not exist"
         )
 
-    return {"Token": token, "userId": usr.id}
+    return {"Token": token, "userId": usr.id, "roleId": usr.role_id}
 
 
 # get user by name
@@ -89,7 +89,6 @@ def get_user_by_id_endpoint(id: int, db: Session = Depends(get_db)):
         id=user.id,
         name=user.name,
         email=user.email,
-        birthdate=user.birthdate,
         phone=user.phone,
         program=program.name,
         role=role.name,
