@@ -232,6 +232,7 @@ fun ListarUsuariosView(
                                 Spacer(modifier = Modifier.width(3.dp))
                                 Text(text = "Descargar Reporte")
                             }
+
                             Button(
                                 onClick = {
                                     navController.navigate("listarReservas")
@@ -246,6 +247,22 @@ fun ListarUsuariosView(
                             ) {
                                 Text(text = "Asignar Sala")
                             }
+
+                            Button(
+                                onClick = {
+                                    navController.navigate("registrarHoras/${user.name}")
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF0A5795),
+                                    contentColor = Color.White
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                            ) {
+                                Text(text = "Registrar horas")
+                            }
+
                         }
                     }
                 }

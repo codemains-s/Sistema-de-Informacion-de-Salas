@@ -39,8 +39,7 @@ fun FirmaView(
 ) {
     var path by remember { mutableStateOf(Path()) }
     var points by remember { mutableStateOf(listOf<Offset>()) }
-    var shouldRedraw by remember { mutableStateOf(false) } // Estado para forzar la actualización del Canvas
-    val MAX_POINTS = 1000 // Define el límite de puntos
+    var shouldRedraw by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { CustomTopAppBar(navController) },
