@@ -65,6 +65,7 @@ fun RegistrarHorasView(
     var path by remember { mutableStateOf(Path()) }
     var points by remember { mutableStateOf(listOf<Offset>()) }
     var shouldRedraw by remember { mutableStateOf(false) }
+    var horasCumplidas by remember { mutableStateOf("") } // Text de horas cumplidas
 
     LaunchedEffect(Unit) {
     }
@@ -134,9 +135,6 @@ fun RegistrarHorasView(
                         )
                         Spacer(modifier = Modifier.height(15.dp))
 
-                        // Text de horas cumplidas
-                        var horasCumplidas by remember { mutableStateOf("0") } // Inica con valor de 0
-
                         Text(
                             text = "Horas cumplidas",
                             color = Color.Black,
@@ -145,20 +143,17 @@ fun RegistrarHorasView(
                         OutlinedTextField(
                             value = horasCumplidas,
                             onValueChange = { newValue ->
-                                // Si el nuevo valor está vacío, coloca "0"
                                 horasCumplidas = when {
-                                    newValue.isEmpty() -> "0"
+                                    newValue.isEmpty() -> ""
                                     newValue.all { it.isDigit() } && newValue.length <= 3 -> {
-                                        // Si el valor actual es "0", reemplázalo con el nuevo valor numérico ingresado
-                                        if (horasCumplidas == "0") newValue.trimStart('0') else newValue
+                                        newValue.trimStart('0')
                                     }
-
-                                    else -> horasCumplidas // Mantén el valor actual si no cumple con las condiciones
+                                    else -> horasCumplidas
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
                             keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Number // Solo muestra el teclado numérico
+                                keyboardType = KeyboardType.Number
                             )
                         )
                         Spacer(modifier = Modifier.height(15.dp))
@@ -175,18 +170,10 @@ fun RegistrarHorasView(
                             value = descripcion,
                             onValueChange = { descripcion = it },
                             modifier = Modifier.fillMaxWidth()
-                            /*
-                             colors = OutlinedTextFieldDefaults.colors(
-                                 focusedBorderColor = Color(0xFFF2C663),
-                                 unfocusedBorderColor = Color.Gray
-                             )*/
                         )
                         Spacer(modifier = Modifier.height(15.dp))
 
 
-                        /*
-                            Este es un campo de pruebas modificar
-                         */
                         var isChecked by remember { mutableStateOf(false) }
 
                         Row(
@@ -310,10 +297,7 @@ fun RegistrarHorasView(
                                 .fillMaxWidth()
                                 .padding(horizontal = 30.dp)
                         ) {
-                            Text(
-                                text = "Registrar",
-                                color = Color(0xFFF2C663)
-                            )
+                            Text(text = "Registrar")
                         }
                     }
                 }
