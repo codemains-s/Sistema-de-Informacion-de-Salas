@@ -3,10 +3,8 @@ package com.example.sis.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,7 +18,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.sis.R
 import com.example.sis.conexion_api.ApiService
@@ -46,7 +43,6 @@ fun LoginView(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -56,16 +52,14 @@ fun LoginView(
             painter = painterResource(id = R.drawable.ucaldas_fondo2),
             contentDescription = "Fondo de registro",
             modifier = Modifier
-                .fillMaxSize()
-                .zIndex(1f),
+                .fillMaxSize(),
             contentScale = ContentScale.Crop,
             alpha = 0.3f
         )
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .zIndex(2f),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -179,13 +173,11 @@ fun LoginView(
                 onDismissRequest = { showSuccessDialog = false },
                 title = { Text(text = "Inicio de sesión exitoso") },
                 text = {
-                    Column {
-                        Text(
-                            text = "Has iniciado sesión correctamente",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                        )
-                    }
+                    Text(
+                        text = "Has iniciado sesión correctamente",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
                 },
                 confirmButton = {
                     Button(
@@ -240,14 +232,13 @@ fun LogoutButton(navController: NavController) {
 
     Column {
         Button(
-            onClick = { showDialog = true }, // Mostrar el popup al presionar el botón
-            modifier = Modifier
-                .padding(8.dp),
+            onClick = { showDialog = true },
+            modifier = Modifier.padding(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent, // Fondo transparente
-                contentColor = Color.White         // Color del texto
+                containerColor = Color.Transparent,
+                contentColor = Color.White
             ),
-            elevation = ButtonDefaults.buttonElevation(0.dp) // Sin sombra
+            elevation = ButtonDefaults.buttonElevation(0.dp)
         ) {
             Text(
                 text = "Cerrar sesión",
@@ -263,11 +254,11 @@ fun LogoutButton(navController: NavController) {
                 confirmButton = {
                     Button(
                         onClick = {
-                            tokenManager.clearToken() // Eliminar el token
+                            tokenManager.clearToken()
                             navController.navigate("login") {
-                                popUpTo("listarSalas") { inclusive = true }
+                                popUpTo(0) { inclusive = true }
                             }
-                            showDialog = false // Cerrar el popup
+                            showDialog = false
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Red,
@@ -279,7 +270,7 @@ fun LogoutButton(navController: NavController) {
                 },
                 dismissButton = {
                     Button(
-                        onClick = { showDialog = false }, // Cerrar el popup sin cerrar sesión
+                        onClick = { showDialog = false },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Gray,
                             contentColor = Color.White
@@ -292,5 +283,3 @@ fun LogoutButton(navController: NavController) {
         }
     }
 }
-
-
