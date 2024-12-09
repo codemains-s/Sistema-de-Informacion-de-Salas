@@ -30,16 +30,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.sis.R
+import com.example.sis.datamodels.RoomScheduleId
 import com.example.sis.datamodels.room.Room
 import com.example.sis.datamodels.user.User
+import com.example.sis.logic.logicProgram.ProgramResult
+import com.example.sis.logic.logicProgram.programList
 import com.example.sis.logic.logicRoom.RegisterBookingResult
 import com.example.sis.logic.logicRoom.RoomResult
+import com.example.sis.logic.logicRoom.RoomScheduleResult
 import com.example.sis.logic.logicRoom.registerBooking
 import com.example.sis.logic.logicRoom.roomById
+import com.example.sis.logic.logicRoom.roomScheduleListId
+import com.example.sis.logic.logicUser.AllUsersRoleIdResult
+import com.example.sis.logic.logicUser.getAllUsersRoleId
 import com.example.sis.logic.user.logicUser.userById
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HorayRegisterView(
     navController: NavController,
@@ -52,6 +60,17 @@ fun HorayRegisterView(
     val context = LocalContext.current
     val userId = UserIdManager(context).getUserId()
     val coroutineScope = rememberCoroutineScope()
+    var roomScheduleId by remember { mutableStateOf<RoomScheduleId?>(null) }
+    var monitors by remember { mutableStateOf<List<User>>(emptyList()) } // Lista de monitores
+    var selectedMonitor by remember { mutableStateOf<User?>(null) } // Monitor seleccionado
+    var userLoadError by remember { mutableStateOf<String?>(null) }
+    var isLoadingUsers by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+
+
+
+
+
 
     LaunchedEffect(roomId) {
         coroutineScope.launch {
@@ -99,6 +118,46 @@ fun HorayRegisterView(
             }
         }
     }
+
+    LaunchedEffect(roomId) {
+        coroutineScope.launch {
+            try {
+                isLoadingRoom = true
+                errorMessageRoom = null
+
+                val result = roomScheduleListId(roomId, context)
+
+                when (result) {
+                    is RoomScheduleResult.Success -> {
+                        roomScheduleId = result.rooms.firstOrNull()
+                    }
+                    is RoomScheduleResult.Error -> {
+                        errorMessageRoom = result.message
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessageRoom = "Error al cargar los detalles: ${e.message}"
+            } finally {
+                isLoadingRoom = false
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        isLoadingUsers = true
+        when (val result = getAllUsersRoleId(context)) {
+            is AllUsersRoleIdResult.Success -> {
+                monitors = result.users
+                userLoadError = null
+            }
+            is AllUsersRoleIdResult.Error -> {
+                monitors = emptyList()
+                userLoadError = result.message
+            }
+        }
+        isLoadingUsers = false
+    }
+
 
     // Variables para la selección de fecha y hora
     var selectedDate by remember { mutableStateOf("") }
@@ -214,13 +273,64 @@ fun HorayRegisterView(
                             )
                             Spacer(modifier = Modifier.height(15.dp))
                             Text(text = "Nombre monitor", color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start))
-                            Text(
-                                text = "${userDetails?.name ?: "Sin nombre"}",
-                                color = Color.Black,
-                                fontSize = 12.sp,
-                                //fontWeight = FontWeight.Bold,
-                                modifier = Modifier.align(Alignment.Start)
-                            )
+                            // Program Dropdown
+                            if (isLoadingUsers) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .padding(vertical = 16.dp)
+                                )
+                            } else if (userLoadError != null) {
+                                Text(
+                                    text = userLoadError ?: "Error loading monitors",
+                                    color = Color.Red,
+                                    modifier = Modifier.padding(vertical = 16.dp)
+                                )
+                            } else {
+                                ExposedDropdownMenuBox(
+                                    expanded = expanded,
+                                    onExpandedChange = { expanded = !expanded },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    TextField(
+                                        value = selectedMonitor?.name ?: "Select Monitor",
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        label = { Text("Monitor") },
+                                        trailingIcon = {
+                                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                                expanded = expanded
+                                            )
+                                        },
+                                        colors = TextFieldDefaults.colors(
+                                            unfocusedContainerColor = Color.Transparent,
+                                            unfocusedIndicatorColor = Color.Black,
+                                            focusedIndicatorColor = Color.Black
+                                        ),
+                                        modifier = Modifier
+                                            .menuAnchor()
+                                            .fillMaxWidth(),
+                                    )
+
+                                    ExposedDropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }
+                                    ) {
+                                        monitors.forEach { monitor ->
+                                            DropdownMenuItem(
+                                                text = { Text(monitor.name) },
+                                                onClick = {
+                                                    selectedMonitor = monitor
+                                                    expanded = false
+                                                },
+                                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+
                             Spacer(modifier = Modifier.height(15.dp))
 
                             Text(text = "Sala", color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start))
@@ -248,22 +358,24 @@ fun HorayRegisterView(
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(text = "Hora inicio", fontWeight = FontWeight.Bold, color = Color.Black)
-                                    OutlinedButton(
-                                        onClick = { timePickerDialogInicio.show() },
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(text = if (horaInicio.isEmpty()) "" else horaInicio, color = Color.Black)
-                                    }
+                                    Text(
+                                        text = "${roomScheduleId?.hour_start ?: "Desconocida"}",
+                                        color = Color.Black,
+                                        fontSize = 12.sp,
+                                        //fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.align(Alignment.Start)
+                                    )
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(text = "Hora fin", fontWeight = FontWeight.Bold, color = Color.Black)
-                                    OutlinedButton(
-                                        onClick = { timePickerDialogFin.show() },
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(text = if (horaFin.isEmpty()) "" else horaFin, color = Color.Black)
-                                    }
+                                    Text(
+                                        text = "${roomScheduleId?.hour_end ?: "Desconocida"}",
+                                        color = Color.Black,
+                                        fontSize = 12.sp,
+                                        //fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.align(Alignment.Start)
+                                    )
                                 }
                             }
                             Spacer(modifier = Modifier.height(20.dp))
@@ -273,14 +385,17 @@ fun HorayRegisterView(
                                     scope.launch {
                                         isLoading = true
                                         when (val result = userId?.let {
-                                            registerBooking(
-                                                user_id = it.toInt(),
-                                                room_id = roomId,
-                                                booking_date = selectedDate,
-                                                start_time = horaInicio,
-                                                end_time = horaFin,
-                                                status = "Reservada"
-                                            )
+                                            selectedMonitor?.let { it1 ->
+                                                val registerBooking = registerBooking(
+                                                    user_id = it1.id,
+                                                    room_id = roomId,
+                                                    booking_date = selectedDate,
+                                                    start_time = roomScheduleId?.hour_start.toString(),
+                                                    end_time = roomScheduleId?.hour_end.toString(),
+                                                    status = "Reservada"
+                                                )
+                                                registerBooking
+                                            }
                                         }) {
                                             is RegisterBookingResult.Success -> {
                                                 showSuccessDialog = true

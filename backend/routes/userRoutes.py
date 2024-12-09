@@ -15,6 +15,7 @@ from controllers.userController import (
     exist_token,
     get_user_by_id,
     password_context,
+    get_all_users_by_role_id,
 )
 from fastapi.responses import StreamingResponse
 from controllers.reportController import generate_user_report
@@ -77,9 +78,13 @@ def get_user(email: str, db: Session = Depends(get_db)):
 def all_users(db: Session = Depends(get_db)):
     return get_all_users(db)
 
+@router.get("/all_users_role_id/", dependencies=[Depends(Portador())])
+def all_users_role_id(role_id: int, db: Session = Depends(get_db)):
+    return get_all_users_by_role_id(role_id, db)
+
 
 # get user by id
-@router.get("/user_by_id/", dependencies=[Depends(Portador())])
+@router.get("/user_by_id/")
 def get_user_by_id_endpoint(id: int, db: Session = Depends(get_db)):
     user, role, program = get_user_by_id(id, db)
     if user is None:
@@ -94,8 +99,6 @@ def get_user_by_id_endpoint(id: int, db: Session = Depends(get_db)):
         role=role.name,
         token=user.token,
     )
-
-    print(f"User: {user_out}")
 
     return user_out
 

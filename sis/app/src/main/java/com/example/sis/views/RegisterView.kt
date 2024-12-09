@@ -38,7 +38,6 @@ fun RegisterView(
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var birthdate by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var selectedProgram by remember { mutableStateOf<ProgramById?>(null) }
@@ -209,15 +208,6 @@ fun RegisterView(
                 )
 
                 OutlinedTextField(
-                    value = birthdate,
-                    onValueChange = { birthdate = it },
-                    label = { Text("Birthday (yyyy-MM-dd)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = textFieldShape,
-                    colors = textFieldColors
-                )
-
-                OutlinedTextField(
                     value = phone,
                     onValueChange = { phone = it },
                     label = { Text("Phone") },
@@ -254,7 +244,6 @@ fun RegisterView(
                             when (val result = registerUser(
                                 name,
                                 email,
-                                birthdate,
                                 phone,
                                 password,
                                 selectedProgram?.id ?: 0,

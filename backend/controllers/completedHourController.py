@@ -26,6 +26,7 @@ def update_completed_hour(id_completed_hour, updated_completed_hour: CompletedHo
     db_completed_hour.hour_completed = updated_completed_hour.hour_completed
     db_completed_hour.date_register = updated_completed_hour.date_register
     db_completed_hour.status = updated_completed_hour.status
+    db_completed_hour.signature = updated_completed_hour.signature
     db_completed_hour.observations = updated_completed_hour.observations
     db.commit()
     db.refresh(db_completed_hour)
