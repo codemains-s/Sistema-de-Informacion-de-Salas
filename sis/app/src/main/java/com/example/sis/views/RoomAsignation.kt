@@ -33,6 +33,7 @@ import com.example.sis.R
 import com.example.sis.datamodels.RoomScheduleId
 import com.example.sis.datamodels.room.Room
 import com.example.sis.datamodels.user.User
+import com.example.sis.datamodels.user.UserTable
 import com.example.sis.logic.logicProgram.ProgramResult
 import com.example.sis.logic.logicProgram.programList
 import com.example.sis.logic.logicRoom.RegisterBookingResult
@@ -61,8 +62,8 @@ fun HorayRegisterView(
     val userId = UserIdManager(context).getUserId()
     val coroutineScope = rememberCoroutineScope()
     var roomScheduleId by remember { mutableStateOf<RoomScheduleId?>(null) }
-    var monitors by remember { mutableStateOf<List<User>>(emptyList()) } // Lista de monitores
-    var selectedMonitor by remember { mutableStateOf<User?>(null) } // Monitor seleccionado
+    var monitors by remember { mutableStateOf<List<UserTable>>(emptyList()) } // Lista de monitores
+    var selectedMonitor by remember { mutableStateOf<UserTable?>(null) } // Monitor seleccionado
     var userLoadError by remember { mutableStateOf<String?>(null) }
     var isLoadingUsers by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }

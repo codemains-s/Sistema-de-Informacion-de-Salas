@@ -13,7 +13,7 @@ import exceptionsAlert
 
 
 sealed class AllUsersResult {
-    data class Success(val users: List<User>) : AllUsersResult()
+    data class Success(val users: List<UserTable>) : AllUsersResult()
     data class Error(val message: String) : AllUsersResult()
 }
 
@@ -25,7 +25,7 @@ suspend fun getAllUsers(context: Context): AllUsersResult {
                 return@withContext AllUsersResult.Error("Token no disponible")
             }
 
-            val response: Response<List<User>> = ApiService.userApi.get_all_users_role_id(2,"Bearer ${token}")
+            val response: Response<List<UserTable>> = ApiService.userApi.get_all_users_role_id(2,"Bearer ${token}")
 
             if (response.isSuccessful) {
                 response.body()?.let { users ->
@@ -49,7 +49,7 @@ suspend fun getAllUsers(context: Context): AllUsersResult {
 }
 
 sealed class AllUsersRoleIdResult {
-    data class Success(val users: List<User>) : AllUsersRoleIdResult()
+    data class Success(val users: List<UserTable>) : AllUsersRoleIdResult()
     data class Error(val message: String) : AllUsersRoleIdResult()
 }
 
@@ -61,7 +61,7 @@ suspend fun getAllUsersRoleId(context: Context): AllUsersRoleIdResult {
                 return@withContext AllUsersRoleIdResult.Error("Token no disponible")
             }
 
-            val response: Response<List<User>> = ApiService.userApi.get_all_users_role_id(2,"Bearer ${token}")
+            val response: Response<List<UserTable>> = ApiService.userApi.get_all_users_role_id(2,"Bearer ${token}")
 
             if (response.isSuccessful) {
                 response.body()?.let { users ->

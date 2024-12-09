@@ -79,11 +79,26 @@ def exist_token(email: str, password: str, db):
     return user.token
 
 def get_all_users_by_role_id(role_id: int, db):
-    users = db.query(User).filter(User.role_id == role_id).all()
+
     if not exist_role_id(role_id, db):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Rol no encontrado"
         )
+    users = db.query(User).all()
+    # retornar solo nombre, email, programa
+    users = [
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "program": db.query(Program)
+            .filter(Program.id == user.program_id)
+            .first()
+            .name,
+        }
+        for user in users if user.role_id == role_id
+    ]
+
     return users
 
 

@@ -44,8 +44,8 @@ fun ListarUsuariosView(
     navController: NavController,
 ) {
     val (searchText, setSearchText) = remember { mutableStateOf("") }
-    var allUsers by remember { mutableStateOf<List<User>>(emptyList()) }
-    var filteredUsers by remember { mutableStateOf<List<User>>(emptyList()) }
+    var allUsers by remember { mutableStateOf<List<UserTable>>(emptyList()) }
+    var filteredUsers by remember { mutableStateOf<List<UserTable>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessagee by remember { mutableStateOf("") }
@@ -284,8 +284,8 @@ fun ListarUsuariosView(
 
 private fun filterUsers(
     searchText: String,
-    allUsers: List<User>,
-    setFilteredUsers: (List<User>) -> Unit
+    allUsers: List<UserTable>,
+    setFilteredUsers: (List<UserTable>) -> Unit
 ) {
     val filteredUsers = allUsers.filter { user ->
         (searchText.isEmpty() || user.name.lowercase().contains(searchText.lowercase()))
