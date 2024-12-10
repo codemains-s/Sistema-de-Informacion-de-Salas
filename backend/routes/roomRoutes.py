@@ -11,6 +11,7 @@ from controllers.roomController import (
     delete_room,
     exist_room,
     get_room_by_id,
+    get_room_by_status
 )
 
 router = APIRouter()
@@ -30,6 +31,11 @@ def create_new_room(room: Room, db: Session = Depends(get_db)):
 @router.get("/all_rooms/")
 def get_all_rooms(db: Session = Depends(get_db)):
     rooms = all_rooms(db)
+    return rooms
+
+@router.get("/room_by_status/")
+def get_room_by_status_endpoint(status: str, db: Session = Depends(get_db)):
+    rooms = get_room_by_status(status, db)
     return rooms
 
 
