@@ -171,7 +171,7 @@ fun ListarHorariosSalaView(
                             Text(
                                 text = "Estado: ${schedule.status}",
                                 fontSize = 14.sp,
-                                color = if (isAvailable) Color.Green else Color.Red
+                                color = if (isAvailable) Color(0xFF228B22) else Color.Red
                             )
                             Spacer(modifier = Modifier.height(8.dp))
 

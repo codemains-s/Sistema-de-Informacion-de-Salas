@@ -4,6 +4,7 @@ import CustomBottomAppBar
 import CustomTopAppBar
 import RoomIdManager
 import UserIdManager
+import UserRoleIdManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,8 +49,7 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     var roomIdManager = RoomIdManager(context)
-
-    val userId = UserIdManager(context).getUserId()
+    var userRoleIdManager = UserRoleIdManager(context)
 
     LaunchedEffect(salaId) {
         coroutineScope.launch {
@@ -183,33 +183,31 @@ fun DetalleSalaView(salaId: String, navController: NavController) {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 80.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally // Asegura la alineación centrada
-                    ) {
-                        Button(
-                            onClick = {
-                                val roomID = roomDetails?.id ?: return@Button
-                                navController.navigate("horariosSala/$roomID")
-                            },
+                    if (userRoleIdManager.getUserRoleId() == "1" ) {
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(50.dp), // Altura consistente para los botones
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF0A5795),
-                                contentColor = Color.White
-                            )
+                                .padding(horizontal = 80.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = "Ver horarios disponibles")
+                            Button(
+                                onClick = {
+                                    val roomID = roomDetails?.id ?: return@Button
+                                    navController.navigate("horariosSala/$roomID")
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF0A5795),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(text = "Ver horarios disponibles")
+                            }
                         }
                     }
-
-
                     Spacer(modifier = Modifier.height(16.dp))
-
-
                 }
             }
         }

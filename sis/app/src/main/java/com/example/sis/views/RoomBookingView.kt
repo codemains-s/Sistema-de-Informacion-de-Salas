@@ -180,7 +180,7 @@ fun ListarReservasSalaView(
                                     Text(
                                         text = "Estado: ${booking.status}",
                                         fontSize = 14.sp,
-                                        color = if (booking.status.lowercase() == "confirmado") Color.Green else Color.Red
+                                        color = if (booking.status.lowercase() == "confirmado") Color(0xFF228B22) else Color.Red
                                     )
                                 }
                                 Button(

@@ -19,6 +19,7 @@ fun CustomBottomAppBar(navController: NavController) {
     val context = LocalContext.current
     var roomIdManager = RoomIdManager(context)
     var userIdManager = UserIdManager(context)
+    var userRoleIdManager = UserRoleIdManager(context)
 
     // State for dropdown menu
     var expanded by remember { mutableStateOf(false) }
@@ -37,21 +38,17 @@ fun CustomBottomAppBar(navController: NavController) {
                     modifier = Modifier.size(40.dp)
                 )
             }
-            IconButton(onClick = { navController.navigate("listarReservas") }) {
-                Image(
-                    painter = painterResource(id = R.drawable.schedule),
-                    contentDescription = "Schedule",
-                    modifier = Modifier.size(40.dp)
-                )
-            }
 
-            /*IconButton(onClick = { navController.navigate("registrarHoras") }) {
-                Image(
-                    painter = painterResource(id = R.drawable.notification),
-                    contentDescription = "Notifications",
-                    modifier = Modifier.size(40.dp)
-                )
-            }*/
+            if (userRoleIdManager.getUserRoleId() == "1") {
+
+                IconButton(onClick = { navController.navigate("listarReservas") }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.schedule),
+                        contentDescription = "Schedule",
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+            }
 
             IconButton(onClick = { navController.navigate("profile/${userIdManager.getUserId()}") }) {
                 Image(
@@ -60,108 +57,104 @@ fun CustomBottomAppBar(navController: NavController) {
                     modifier = Modifier.size(40.dp)
                 )
             }
-
-            // Settings Icon with Dropdown menu
-            Box {
-                IconButton(onClick = { expanded = !expanded }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.setting),
-                        contentDescription = "Settings",
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier
-                        .background(
-                            color = Color(0xFFF2C663),
-                        )
-                ) {
-                    // Primer elemento del menú
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp, vertical = 8.dp)
-                            .background(
-                                color = Color(0xFF0A5795),
-                                shape = RoundedCornerShape(20.dp) // More rounded buttons
-                            )
-
-                    ) {
-                        DropdownMenuItem(
-                            colors = MenuDefaults.itemColors(
-                                textColor = Color.White,
-                                leadingIconColor = Color.White
-                            ),
-                            text = {
-                                Text(
-                                    "Registrar Programa",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            },
-                            onClick = {
-                                navController.navigate("registrarPrograma")
-                                expanded = false
-                            }
+            if (userRoleIdManager.getUserRoleId() == "1") {
+                Box {
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.setting),
+                            contentDescription = "Settings",
+                            modifier = Modifier.size(40.dp)
                         )
                     }
-
-                    Box(
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .padding(horizontal = 12.dp, vertical = 8.dp)
                             .background(
-                                color = Color(0xFF0A5795),
-                                shape = RoundedCornerShape(20.dp) // More rounded buttons
-                            )
-
-                    ) {
-                        DropdownMenuItem(
-                            colors = MenuDefaults.itemColors(
-                                textColor = Color.White,
-                                leadingIconColor = Color.White
-                            ),
-                            text = {
-                                Text(
-                                    "Ver monitores",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            },
-                            onClick = {
-                                navController.navigate("listarUsuarios")
-                                expanded = false
-                            }
-                        )
-                    }
-
-                    // Segundo elemento del menú
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp, vertical = 8.dp)
-                            .background(
-                                color = Color(0xFF0A5795),
-                                shape = RoundedCornerShape(20.dp) // More rounded buttons
+                                color = Color(0xFFF2C663),
                             )
                     ) {
-                        DropdownMenuItem(
-                            colors = MenuDefaults.itemColors(
-                                textColor = Color.White,
-                                leadingIconColor = Color.White
-                            ),
-                            text = {
-                                Text(
-                                    "Otra Opción",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                                .background(
+                                    color = Color(0xFF0A5795),
+                                    shape = RoundedCornerShape(20.dp)
                                 )
-                            },
-                            onClick = {
-                                // Navegar a otra pantalla o realizar otra acción
-                                expanded = false
-                            }
-                        )
+
+                        ) {
+                            DropdownMenuItem(
+                                colors = MenuDefaults.itemColors(
+                                    textColor = Color.White,
+                                    leadingIconColor = Color.White
+                                ),
+                                text = {
+                                    Text(
+                                        "Registrar Programa",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                },
+                                onClick = {
+                                    navController.navigate("registrarPrograma")
+                                    expanded = false
+                                }
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                                .background(
+                                    color = Color(0xFF0A5795),
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+
+                        ) {
+                            DropdownMenuItem(
+                                colors = MenuDefaults.itemColors(
+                                    textColor = Color.White,
+                                    leadingIconColor = Color.White
+                                ),
+                                text = {
+                                    Text(
+                                        "Ver monitores",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                },
+                                onClick = {
+                                    navController.navigate("listarUsuarios")
+                                    expanded = false
+                                }
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                                .background(
+                                    color = Color(0xFF0A5795),
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+                        ) {
+                            DropdownMenuItem(
+                                colors = MenuDefaults.itemColors(
+                                    textColor = Color.White,
+                                    leadingIconColor = Color.White
+                                ),
+                                text = {
+                                    Text(
+                                        "Otra Opción",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                },
+                                onClick = {
+                                    expanded = false
+                                }
+                            )
+                        }
                     }
                 }
             }

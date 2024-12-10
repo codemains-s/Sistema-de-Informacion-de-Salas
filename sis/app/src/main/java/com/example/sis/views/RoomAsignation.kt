@@ -7,6 +7,7 @@ import android.app.TimePickerDialog
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -34,8 +35,6 @@ import com.example.sis.datamodels.RoomScheduleId
 import com.example.sis.datamodels.room.Room
 import com.example.sis.datamodels.user.User
 import com.example.sis.datamodels.user.UserTable
-import com.example.sis.logic.logicProgram.ProgramResult
-import com.example.sis.logic.logicProgram.programList
 import com.example.sis.logic.logicRoom.RegisterBookingResult
 import com.example.sis.logic.logicRoom.RoomResult
 import com.example.sis.logic.logicRoom.RoomScheduleResult
@@ -306,7 +305,8 @@ fun HorayRegisterView(
                                         colors = TextFieldDefaults.colors(
                                             unfocusedContainerColor = Color.Transparent,
                                             unfocusedIndicatorColor = Color.Black,
-                                            focusedIndicatorColor = Color.Black
+                                            focusedIndicatorColor = Color.Black,
+                                            focusedContainerColor = Color(0xFFF2C663),
                                         ),
                                         modifier = Modifier
                                             .menuAnchor()
@@ -324,7 +324,8 @@ fun HorayRegisterView(
                                                     selectedMonitor = monitor
                                                     expanded = false
                                                 },
-                                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                                modifier = Modifier.background(Color(0xFFF2C663))
                                             )
                                         }
                                     }
@@ -339,7 +340,6 @@ fun HorayRegisterView(
                                 text = "${roomDetails?.name ?: "Desconocida"}",
                                 color = Color.Black,
                                 fontSize = 12.sp,
-                                //fontWeight = FontWeight.Bold,
                                 modifier = Modifier.align(Alignment.Start)
                             )
                             Spacer(modifier = Modifier.height(15.dp))
