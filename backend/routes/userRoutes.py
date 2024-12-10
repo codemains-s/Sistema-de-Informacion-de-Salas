@@ -102,6 +102,30 @@ def get_user_by_id_endpoint(id: int, db: Session = Depends(get_db)):
 
     return user_out
 
+@router.get("/monitor_by_id/")
+def get_monitor_by_id_endpoint(id: int, db: Session = Depends(get_db)):
+    if not isinstance(id, int):
+        return {"error": "Dato ingresado no es valido."}
+
+    user, role, program = get_user_by_id(id, db)
+    if user is None:
+        return {"error": "User not found"}
+
+    user_out = UserOut(
+        id=user.id,
+        name=user.name,
+        email=user.email,
+        phone=user.phone,
+        program=program.name,
+        role=role.name,
+        token=user.token,
+    )
+
+    if user_out.role == "Monitor":
+        return user_out
+    else:
+        return {"error": "User not monitor"}
+
 
 # delete user
 @router.delete("/delete_user/{user_id}", dependencies=[Depends(Portador())])

@@ -158,14 +158,14 @@ def exist_user_id(user_id: int, db):
 
 def get_user_by_id(user_id: int, db):
     user = db.query(User).filter(User.id == user_id).first()
-    role = db.query(Role).filter(Role.id == user.role_id).first()
-    program = db.query(Program).filter(Program.id == user.program_id).first()
 
     if user is None:
         return None, None, None
 
-    return user, role, program
+    role = db.query(Role).filter(Role.id == user.role_id).first()
+    program = db.query(Program).filter(Program.id == user.program_id).first()
 
+    return user, role, program
 
 def get_token_by_id(user_id: int, db):
     user = db.query(User).filter(User.id == user_id).first()
