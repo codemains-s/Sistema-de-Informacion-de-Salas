@@ -35,7 +35,7 @@ class TestRoomAvailable(unittest.TestCase):
             get_room_by_status_endpoint("", self.db)
         
         # Verificar el mensaje de la excepción
-        self.assertEqual(str(context.exception), "Se debe de ingresar un estado de sala")
+        self.assertEqual(str(context.exception), "Se debe de ingresar un estado de sala a consultar")
         
         
 if __name__ == '__main__':

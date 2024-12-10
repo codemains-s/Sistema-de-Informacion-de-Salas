@@ -15,7 +15,7 @@ def all_rooms(db):
 
 def get_room_by_status(status: str, db):
     if not status:
-        raise ValueError("Se debe de ingresar un estado de sala")
+        raise ValueError("Se debe de ingresar un estado de sala a consultar")
     rooms = db.query(Room).all()
 
     rooms =  [
