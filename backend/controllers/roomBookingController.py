@@ -71,6 +71,15 @@ def all_room_bookings(db):
 def get_room_booking_by_id(id: int, db):
     return db.query(RoomBooking).filter(RoomBooking.id == id).first()
 
+def get_room_bookings_by_user_id(user_id: int, db):
+    room_bookings = db.query(RoomBooking).filter(RoomBooking.user_id == user_id).all()
+
+    if not room_bookings:
+        return f"No se encontraron reservas para el usuario con ID {user_id}."
+
+    return room_bookings
+
+
 def update_room_booking(id: int, new_room_booking: RoomBooking, db):
     # Validar horarios y fecha de la reserva
     validate_booking_times(new_room_booking.start_time, new_room_booking.end_time)

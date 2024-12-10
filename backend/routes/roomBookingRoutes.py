@@ -4,7 +4,7 @@ from config.db import get_db
 from sqlalchemy.orm import Session
 from security.seguridad import Portador
 from controllers.roomBookingController import (create_room_booking, all_room_bookings, get_room_booking_by_id,
-                                               update_room_booking, delete_room_booking, exist_room_booking)
+                                               update_room_booking, delete_room_booking, exist_room_booking, get_room_bookings_by_user_id)
 
 router = APIRouter()
 
@@ -22,6 +22,13 @@ def get_roomBooking_id(id: int, db: Session = Depends(get_db)):
     if not exist:
         raise HTTPException(status_code=404, detail="The room booking does not exist")
     return get_room_booking_by_id(id, db)
+
+@router.get("/get_roomBookings_user/{user_id}", dependencies=[Depends(Portador())])
+def get_roomBookings_user(user_id: int, db: Session = Depends(get_db)):
+    room_bookings = get_room_bookings_by_user_id(user_id, db)
+    if isinstance(room_bookings, str):
+        return room_bookings
+    return room_bookings
 
 @router.put("/update_roomBooking/{id}", dependencies=[Depends(Portador())])
 def update_roomBooking(id: int, room_booking: RoomBooking, db: Session = Depends(get_db)):
