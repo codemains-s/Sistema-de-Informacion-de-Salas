@@ -13,6 +13,20 @@ def create_room(new_room:Room, db):
 def all_rooms(db):
     return db.query(Room).all()
 
+def get_room_by_status(status: str, db):
+    if not status:
+        raise ValueError("Se debe de ingresar un estado de sala a consultar")
+    rooms = db.query(Room).all()
+
+    rooms =  [
+        {
+            "name": room.name,
+            "status": room.status,
+        }
+        for room in rooms if room.status == status
+    ]
+    return rooms
+
 def get_room_by_id(id, db):
     return db.query(Room).filter(Room.id == id).first()
 

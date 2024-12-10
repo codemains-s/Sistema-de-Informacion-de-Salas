@@ -4,57 +4,78 @@ import pandas as pd
 from io import BytesIO
 from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
+from openpyxl.drawing.image import Image
+import requests
+from PIL import Image as PILImage
 
 
 def generate_user_report(user_id: int, db: Session):
-    # Obtener los datos del usuario
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        return None  # Retorna None si el usuario no existe
+        return None
 
-    # Obtener las reservas de salas del usuario
     room_bookings = db.query(RoomBooking).filter(RoomBooking.user_id == user_id).all()
-
-    # Obtener las horas completadas del usuario
     completed_hours = (
         db.query(CompletedHours).filter(CompletedHours.user_id == user_id).all()
     )
 
-    # Crear un DataFrame consolidado
     report_data = []
     accumulated_hours = 0
     for booking, hour in zip(room_bookings, completed_hours):
         completed = hour.hour_completed if hour else 0
         accumulated_hours += completed
+
+        booking_date = booking.booking_date if booking else pd.NaT
+
         report_data.append(
             {
-                "Fecha": booking.booking_date if booking else "N/A",
-                "Sala": booking.room.name if booking else "N/A",
-                "Hora Inicio": booking.start_time if booking else "N/A",
-                "Hora Fin": booking.end_time if booking else "N/A",
-                "Observaciones": hour.observations if hour else "N/A",
+                "Fecha": booking_date,
+                "Sala": booking.room.name if booking else pd.NA,
+                "Hora Inicio": booking.start_time if booking else pd.NA,
+                "Hora Fin": booking.end_time if booking else pd.NA,
+                "Observaciones": hour.observations if hour else pd.NA,
                 "Nombre": user.name,
                 "Horas Completadas": accumulated_hours,
+                "Coordinador": None,
             }
         )
 
     report_df = pd.DataFrame(report_data)
 
-    # Generar el archivo Excel en memoria
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         report_df.to_excel(writer, index=False, sheet_name="User Report")
 
-        # Aplicar estilos de centrado y ajustar el ancho
         workbook = writer.book
         worksheet = writer.sheets["User Report"]
 
-        # Centrar el texto en todas las celdas
         for row in worksheet.iter_rows():
             for cell in row:
                 cell.alignment = Alignment(horizontal="center", vertical="center")
 
-        # Ajustar el ancho de las columnas
+        # Añadir la imagen de la firma
+        for i, hour in enumerate(completed_hours, start=2):
+            signature_url = hour.signature
+            if signature_url:
+                try:
+                    # Obtener la imagen desde la URL y redimensionarla
+                    response = requests.get(signature_url)
+                    img = PILImage.open(BytesIO(response.content))
+                    img = img.resize((60, 40), PILImage.LANCZOS)
+                    img_byte_arr = BytesIO()
+                    img.save(img_byte_arr, format="PNG")
+                    img_byte_arr.seek(0)
+
+                    excel_img = Image(img_byte_arr)
+                    excel_img.anchor = f"H{str(i)}"
+
+                    worksheet.add_image(excel_img)
+
+                    worksheet.row_dimensions[i].height = 40
+
+                except Exception as e:
+                    print(f"Error al agregar la firma: {e}")
+
         for col_idx, col_cells in enumerate(worksheet.columns, start=1):
             max_length = (
                 max(len(str(cell.value)) for cell in col_cells if cell.value) + 2
