@@ -10,6 +10,32 @@ from PIL import Image as PILImage
 
 
 def generate_user_report(user_id: int, db: Session):
+    """
+    Genera un reporte en Excel para un usuario específico con sus reservas de sala y horas completadas.
+
+    Args:
+        user_id (int): ID del usuario para generar el reporte
+        db (Session): Sesión de la base de datos
+
+    Returns:
+        BytesIO: Un objeto BytesIO que contiene el archivo Excel generado, o None si el usuario no existe
+
+    El reporte incluye:
+        - Fecha de reserva
+        - Nombre de la sala
+        - Hora de inicio y fin
+        - Observaciones
+        - Nombre del usuario
+        - Horas acumuladas
+        - Firma del coordinador (como imagen)
+
+    La función realiza las siguientes operaciones:
+        1. Obtiene los datos del usuario
+        2. Recupera las reservas de sala y horas completadas
+        3. Genera un DataFrame con la información
+        4. Crea un archivo Excel con formato personalizado
+        5. Añade las firmas como imágenes en el archivo
+    """
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         return None

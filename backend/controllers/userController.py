@@ -24,6 +24,17 @@ password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_user(new_user: UserOut, code: str, db):
+    """_summary_
+
+    Args:
+        new_user (UserOut): _description_
+        code (str): _description_
+        db (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
     hashed_password = password_context.hash(new_user.password)
     usr = User(**new_user.dict(exclude={"password"}), password=hashed_password)
     secret_key = os.getenv("SECRET_KEY")
@@ -40,6 +51,14 @@ def create_user(new_user: UserOut, code: str, db):
 
 
 def validate_code(code: str):
+    """_summary_
+
+    Args:
+        code (str): _description_
+
+    Returns:
+        _type_: _description_
+    """
     if code != os.getenv("SPECIAL_ADMIN_CODE") or code == "":
         return False
     return True

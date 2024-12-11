@@ -9,23 +9,47 @@ from starlette.responses import JSONResponse
 from typing import Optional
 
 
+# Configuración inicial para el manejo de correos electrónicos
+
+# Establece la configuración regional para fechas en español
 locale.setlocale(locale.LC_TIME, 'es_ES')
+
+# Carga las variables de entorno desde el archivo .env
 load_dotenv('.env')
 
+# Obtiene las credenciales de SMTP desde las variables de entorno
+# smtp_password: Contraseña para la autenticación SMTP
+# smpt_from: Dirección de correo electrónico remitente
 smtp_password = os.getenv("SMTP_PASSWORD")
 smpt_from = os.getenv("SMTP_FROM")
 
+# Configuración de conexión para el servidor de correo
 conf = ConnectionConfig(
-    MAIL_USERNAME=smpt_from,
-    MAIL_PASSWORD=smtp_password,
-    MAIL_FROM=smpt_from,
-    MAIL_PORT=587,
-    MAIL_SERVER="smtp.gmail.com",
-    MAIL_FROM_NAME="SIS",
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
+    MAIL_USERNAME=smpt_from,       # Usuario de correo (remitente)
+    MAIL_PASSWORD=smtp_password,   # Contraseña de la cuenta
+    MAIL_FROM=smpt_from,           # Dirección desde la que se envían los correos
+    MAIL_PORT=587,                 # Puerto SMTP para Gmail
+    MAIL_SERVER="smtp.gmail.com",  # Servidor SMTP de Gmail
+    MAIL_FROM_NAME="SIS",          # Nombre que aparecerá como remitente
+    MAIL_STARTTLS=True,            # Habilita encriptación STARTTLS
+    MAIL_SSL_TLS=False,            # Deshabilita SSL/TLS directo
 )
+
 async def send_welcome_email(email: str, username: str):
+    """
+    Envía un correo electrónico de bienvenida a un nuevo usuario.
+
+    Args:
+        email (str): Dirección de correo electrónico del destinatario
+        username (str): Nombre de usuario del destinatario
+
+    Returns:
+        None
+
+    Note:
+        Esta función genera un correo HTML con formato personalizado
+        que incluye el nombre del usuario y estilos CSS.
+    """
     template = f"""
         <!DOCTYPE html>
         <html lang="es">
