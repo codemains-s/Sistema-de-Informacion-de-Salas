@@ -54,10 +54,15 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.sis.datamodels.RecordHours.RecordHours
+import com.example.sis.logic.logicRecordHours.RecordHoursRegister
+import com.example.sis.logic.logicRecordHours.registrarHoras
 import com.example.sis.ui.theme.SISTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegistrarHorasView(
@@ -74,6 +79,7 @@ fun RegistrarHorasView(
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
 
@@ -298,10 +304,39 @@ fun RegistrarHorasView(
                             }
                         }
 
-                        // Botón final para confirmar el registro
                         Button(
                             onClick = {
+                                scope.launch {
+                                    try {
+                                        isLoading = true
+                                        val recordHours = RecordHours(
+                                            room_booking_id = 3, // Cambia esto al valor correspondiente
+                                            user_id = userId,
+                                            hour_completed = horasCumplidas.toIntOrNull() ?: 0,
+                                            date_register = "10/12/2024",
+                                            status = if (isChecked) "Completa" else "Pendiente",
+                                            signature = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjNW70HPz4PZe7VUwe8DAxTFgS2rLtAFsmiA&s",
+                                            observations = descripcion
+                                        )
 
+                                        val result = registrarHoras(recordHours, context)
+                                        when (result) {
+                                            is RecordHoursRegister.Success -> {
+                                                showSuccessDialog = true
+                                            }
+
+                                            is RecordHoursRegister.Error -> {
+                                                errorMessage = result.message
+                                                showErrorDialog = true
+                                            }
+                                        }
+                                    } catch (e: Exception) {
+                                        errorMessage = e.message ?: "Error desconocido"
+                                        showErrorDialog = true
+                                    } finally {
+                                        isLoading = false
+                                    }
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF0A5795) // Color del encabezado
@@ -318,13 +353,13 @@ fun RegistrarHorasView(
                             AlertDialog(
                                 onDismissRequest = { showSuccessDialog = false },
                                 title = { Text(text = "Registro Exitoso") },
-                                text = { Text("El programa se ha registrado correctamente.") },
+                                text = { Text("Las horas se han registrado con exito") },
                                 confirmButton = {
                                     Button(
                                         onClick = {
                                             showSuccessDialog = false
-                                            navController.navigate("programList") {
-                                                popUpTo("programRegister") { inclusive = true }
+                                            navController.navigate("listarReservas") {
+                                                popUpTo("RecordHoursRegister") { inclusive = true }
                                             }
                                         }
                                     ) {
