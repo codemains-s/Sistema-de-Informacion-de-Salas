@@ -21,12 +21,14 @@ def create_new_completed_hour(completed_hour: CompletedHour, db: Session = Depen
 def get_all_completed_hours_route(db: Session = Depends(get_db)):
     return all_completed_hours(db)
 
+details = "The completed hour does not exist"
+
 @router.get("/completedHour/{id}", dependencies=[Depends(Portador())])
 def get_completed_hour(id: int, db: Session = Depends(get_db)):
     completed_hour = get_completed_hour_by_id(id, db)
     exist = exist_completed_hour(id, db)
     if not exist:
-        raise HTTPException(status_code=404, detail="The completed hour does not exist")
+        raise HTTPException(status_code=404, detail=details)
     
     return CompletedHourOut(**completed_hour.__dict__)
 
@@ -42,7 +44,7 @@ def get_completed_hour_by_user_id_route(user_id: int, db: Session = Depends(get_
 def update_completed_hour_route(id: int, completed_hour: CompletedHour, db: Session = Depends(get_db)):
     exist = exist_completed_hour(id, db)
     if not exist:
-        raise HTTPException(status_code=404, detail="The completed hour does not exist")
+        raise HTTPException(status_code=404, detail=details)
     updated_completed_hour = update_completed_hour(id, completed_hour, db)
     return CompletedHourOut(**updated_completed_hour.__dict__)
 
@@ -50,6 +52,6 @@ def update_completed_hour_route(id: int, completed_hour: CompletedHour, db: Sess
 def delete_completed_hour_route(id: int, db: Session = Depends(get_db)):
     exist = exist_completed_hour(id, db)
     if not exist:
-        raise HTTPException(status_code=404, detail="The completed hour does not exist")
+        raise HTTPException(status_code=404, detail=details)
     delete_completed_hour(id, db)
     return {"message": "The completed hour has been deleted"}
