@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +46,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -60,12 +62,20 @@ import com.example.sis.ui.theme.SISTheme
 @Composable
 fun RegistrarHorasView(
     navController: NavController,
-    userName: String
+    userName: String,
+    userId: Int
 ) {
     var path by remember { mutableStateOf(Path()) }
     var points by remember { mutableStateOf(listOf<Offset>()) }
     var shouldRedraw by remember { mutableStateOf(false) }
-    var horasCumplidas by remember { mutableStateOf("") } // Text de horas cumplidas
+    var horasCumplidas by remember { mutableStateOf("") }
+
+    var isLoading by remember { mutableStateOf(false) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
     }
@@ -148,6 +158,7 @@ fun RegistrarHorasView(
                                     newValue.all { it.isDigit() } && newValue.length <= 3 -> {
                                         newValue.trimStart('0')
                                     }
+
                                     else -> horasCumplidas
                                 }
                             },
@@ -289,7 +300,9 @@ fun RegistrarHorasView(
 
                         // Botón final para confirmar el registro
                         Button(
-                            onClick = { /* Reemplaza con la lógica del botón */ },
+                            onClick = {
+
+                            },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF0A5795) // Color del encabezado
                             ),
@@ -298,6 +311,41 @@ fun RegistrarHorasView(
                                 .padding(horizontal = 30.dp)
                         ) {
                             Text(text = "Registrar")
+                        }
+
+                        // Diálogo de éxito
+                        if (showSuccessDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showSuccessDialog = false },
+                                title = { Text(text = "Registro Exitoso") },
+                                text = { Text("El programa se ha registrado correctamente.") },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            showSuccessDialog = false
+                                            navController.navigate("programList") {
+                                                popUpTo("programRegister") { inclusive = true }
+                                            }
+                                        }
+                                    ) {
+                                        Text("Aceptar")
+                                    }
+                                }
+                            )
+                        }
+
+                        // Diálogo de error
+                        if (showErrorDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showErrorDialog = false },
+                                title = { Text(text = "Error en el Registro") },
+                                text = { Text(errorMessage) },
+                                confirmButton = {
+                                    Button(onClick = { showErrorDialog = false }) {
+                                        Text("Aceptar")
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -311,6 +359,6 @@ fun RegistrarHorasView(
 fun PreviewMainScreenScreen() {
     SISTheme {
         val navController = rememberNavController()
-        RegistrarHorasView(navController = navController, userName = "")
+        RegistrarHorasView(navController = navController, userName = "", userId = 0)
     }
 }

@@ -247,7 +247,7 @@ fun ListarUsuariosView(
 
                             Button(
                                 onClick = {
-                                    navController.navigate("registrarHoras/${user.name}")
+                                    navController.navigate("registrarHoras/${user.name}/${user.id}")
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFF0A5795),

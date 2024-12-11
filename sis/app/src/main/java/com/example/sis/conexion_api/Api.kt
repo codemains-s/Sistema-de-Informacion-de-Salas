@@ -1,5 +1,6 @@
 package com.example.sis.conexion_api
 
+import com.example.sis.endpoints.CompletedHours_api
 import com.example.sis.endpoints.Program_api
 import com.example.sis.endpoints.RoomBooking_api
 import com.example.sis.endpoints.RoomSchedule_api
@@ -48,5 +49,9 @@ object ApiService {
 
     val roomScheduleApi: RoomSchedule_api by lazy {
         retrofit.create(RoomSchedule_api::class.java)
+    }
+    // API para registrar horas
+    val recordHoursApi: CompletedHours_api by lazy {
+        retrofit.create(CompletedHours_api:: class.java)
     }
 }
