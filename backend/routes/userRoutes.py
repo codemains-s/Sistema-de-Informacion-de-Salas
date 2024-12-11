@@ -35,7 +35,7 @@ async def register(new_user: UserCreate, db: Session = Depends(get_db), code: st
         raise HTTPException(status_code=400, detail="Email not valid")
     if not validate_password(new_user.password):
         raise HTTPException(status_code=400, detail="Password not valid")
-    await send_welcome_email(new_user.email, new_user.name, Request)
+    await send_welcome_email(new_user.email, new_user.name)
     token = create_user(new_user, code, db)
     return {"message": "User created successfully"}
 

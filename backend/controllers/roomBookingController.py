@@ -144,6 +144,7 @@ def validate_booking_times(start_time: str, end_time: str):
     """Valida que los horarios sean correctos."""
     valid_start_time = time(6, 0)
     valid_end_time = time(22, 0)
+    mensaje_retorno = "Horas de monitorias son inválidas"
 
     try:
         start_dt = datetime.strptime(start_time, "%H:%M").time()
@@ -152,11 +153,11 @@ def validate_booking_times(start_time: str, end_time: str):
         return "Formato de hora inválido. Debe ser HH:MM (24 horas)."
 
     if start_dt < valid_start_time or start_dt > valid_end_time:
-        return "Horas de monitorias son inválidas"
+        return mensaje_retorno
     if end_dt < valid_start_time or end_dt > valid_end_time:
-        return "Horas de monitorias son inválidas"
+        return mensaje_retorno
     if end_dt <= start_dt:
-        return "Horas de monitorias son inválidas"
+        return mensaje_retorno
 
     return "Horas de monitorias son válidas"
 

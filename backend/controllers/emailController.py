@@ -25,7 +25,7 @@ conf = ConnectionConfig(
     MAIL_STARTTLS=True,
     MAIL_SSL_TLS=False,
 )
-async def send_welcome_email(email: str, username: str, request: Request):
+async def send_welcome_email(email: str, username: str):
     template = f"""
         <!DOCTYPE html>
         <html lang="es">
