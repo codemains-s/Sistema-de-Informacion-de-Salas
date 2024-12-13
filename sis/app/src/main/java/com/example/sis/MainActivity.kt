@@ -63,12 +63,14 @@ class MainActivity : ComponentActivity() {
                     composable("register") {
                         RegisterView(navController = navController)
                     }
-                    composable("listarSalas") { ListarSalaView(navController = navController) }
-                    composable("reservarSala/{roomID}/{userID}") { backStackEntry ->
+                    composable("listarSalas"){ ListarSalaView(navController = navController) }
+                    composable("reservarSala/{roomID}/{schedule_id}") { backStackEntry ->
                         val roomID = backStackEntry.arguments?.getString("roomID")?.toIntOrNull()
-                        val userID = backStackEntry.arguments?.getString("userID")?.toIntOrNull()
+                        val schedule_id = backStackEntry.arguments?.getString("schedule_id")?.toIntOrNull()
                         if (roomID != null) {
-                            HorayRegisterView(navController = navController, roomId = roomID)
+                            if (schedule_id != null) {
+                                HorayRegisterView(navController = navController, roomId = roomID, schedule_id = schedule_id)
+                            }
                         }
                     }
 

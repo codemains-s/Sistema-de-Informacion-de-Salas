@@ -53,7 +53,7 @@ fun ListarHorariosSalaView(
                 val result = roomScheduleListId(id, context)
                 when (result) {
                     is RoomScheduleResult.Success -> {
-                        allSchedules = result.rooms
+                        allSchedules = result.schedules
                         filteredSchedules = allSchedules
                     }
                     is RoomScheduleResult.Error -> {
@@ -177,7 +177,7 @@ fun ListarHorariosSalaView(
 
                             Button(
                                 onClick = {
-                                    navController.navigate("reservarSala/${schedule.room_id}/${userID}")
+                                    navController.navigate("reservarSala/${schedule.room_id}/${schedule.id}")
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()

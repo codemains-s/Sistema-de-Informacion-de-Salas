@@ -51,7 +51,9 @@ import java.util.Calendar
 @Composable
 fun HorayRegisterView(
     navController: NavController,
-    roomId: Int
+    roomId: Int,
+    schedule_id : Int
+
 ) {
     var userDetails by remember { mutableStateOf<User?>(null) }
     var roomDetails by remember { mutableStateOf<Room?>(null) }
@@ -129,7 +131,16 @@ fun HorayRegisterView(
 
                 when (result) {
                     is RoomScheduleResult.Success -> {
-                        roomScheduleId = result.rooms.firstOrNull()
+                        //roomScheduleId = result.schedules.get(schedule_id)
+                        // resocorrer la lista de horarios y buscar el horario con el id que se recibe
+                        for (schedule in result.schedules){
+                            if (schedule.id == schedule_id){
+                                roomScheduleId = schedule
+                            }
+                        }
+
+
+                        print("Horario de la sala: $roomScheduleId")
                     }
                     is RoomScheduleResult.Error -> {
                         errorMessageRoom = result.message
