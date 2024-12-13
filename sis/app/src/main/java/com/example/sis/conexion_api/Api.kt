@@ -10,7 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiService {
-    private var baseUrl = "http://192.168.129.176:8000/" // Default IP
+    private var baseUrl = "http://54.167.237.53:8000/" // Default IP
 
     private val retrofit: Retrofit
         get() = Retrofit.Builder()

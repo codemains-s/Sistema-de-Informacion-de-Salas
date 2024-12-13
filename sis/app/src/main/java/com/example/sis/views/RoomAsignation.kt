@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ import java.util.Calendar
 fun HorayRegisterView(
     navController: NavController,
     roomId: Int,
-    schedule_id : Int
+    schedule_id: Int
 
 ) {
     var userDetails by remember { mutableStateOf<User?>(null) }
@@ -86,6 +87,7 @@ fun HorayRegisterView(
                     is RoomResult.Success -> {
                         roomDetails = result.rooms.firstOrNull()
                     }
+
                     is RoomResult.Error -> {
                         errorMessageRoom = result.message
                     }
@@ -133,8 +135,8 @@ fun HorayRegisterView(
                     is RoomScheduleResult.Success -> {
                         //roomScheduleId = result.schedules.get(schedule_id)
                         // resocorrer la lista de horarios y buscar el horario con el id que se recibe
-                        for (schedule in result.schedules){
-                            if (schedule.id == schedule_id){
+                        for (schedule in result.schedules) {
+                            if (schedule.id == schedule_id) {
                                 roomScheduleId = schedule
                             }
                         }
@@ -142,6 +144,7 @@ fun HorayRegisterView(
 
                         print("Horario de la sala: $roomScheduleId")
                     }
+
                     is RoomScheduleResult.Error -> {
                         errorMessageRoom = result.message
                     }
@@ -161,6 +164,7 @@ fun HorayRegisterView(
                 monitors = result.users
                 userLoadError = null
             }
+
             is AllUsersRoleIdResult.Error -> {
                 monitors = emptyList()
                 userLoadError = result.message
@@ -203,7 +207,8 @@ fun HorayRegisterView(
         context,
         { _: TimePicker, hourOfDay: Int, minute: Int ->
             val (validatedHour, validatedMinute) = validateTime(hourOfDay, minute)
-            horaInicio = String.format("%02d:%02d", validatedHour, validatedMinute) // Formato militar
+            horaInicio =
+                String.format("%02d:%02d", validatedHour, validatedMinute) // Formato militar
         },
         6, 0, true
     )
@@ -235,7 +240,10 @@ fun HorayRegisterView(
             )
 
             if (isLoadingRoom) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = Color(0xFFF2C663))
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Color(0xFFF2C663)
+                )
             } else if (errorMessageRoom != null) {
                 Text(
                     text = errorMessageRoom ?: "Error desconocido",
@@ -274,7 +282,12 @@ fun HorayRegisterView(
                             )
                             Spacer(modifier = Modifier.height(20.dp))
 
-                            Text(text = "Programa", color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start))
+                            Text(
+                                text = "Programa",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.align(Alignment.Start)
+                            )
                             Text(
                                 text = "${userDetails?.program ?: "Desconocida"}",
                                 color = Color.Black,
@@ -283,7 +296,12 @@ fun HorayRegisterView(
                                 modifier = Modifier.align(Alignment.Start)
                             )
                             Spacer(modifier = Modifier.height(15.dp))
-                            Text(text = "Nombre monitor", color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start))
+                            Text(
+                                text = "Nombre monitor",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.align(Alignment.Start)
+                            )
                             // Program Dropdown
                             if (isLoadingUsers) {
                                 CircularProgressIndicator(
@@ -304,10 +322,10 @@ fun HorayRegisterView(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     TextField(
-                                        value = selectedMonitor?.name ?: "Select Monitor",
+                                        value = selectedMonitor?.name ?: "Seleccione monitor",
                                         onValueChange = {},
                                         readOnly = true,
-                                        label = { Text("Monitor") },
+                                        // label = { Text(text = "Monitor", color = Color.Black) },
                                         trailingIcon = {
                                             ExposedDropdownMenuDefaults.TrailingIcon(
                                                 expanded = expanded
@@ -319,6 +337,7 @@ fun HorayRegisterView(
                                             focusedIndicatorColor = Color.Black,
                                             focusedContainerColor = Color(0xFFF2C663),
                                         ),
+                                        textStyle = TextStyle(color = Color.Black),
                                         modifier = Modifier
                                             .menuAnchor()
                                             .fillMaxWidth(),
@@ -330,7 +349,12 @@ fun HorayRegisterView(
                                     ) {
                                         monitors.forEach { monitor ->
                                             DropdownMenuItem(
-                                                text = { Text(monitor.name) },
+                                                text = {
+                                                    Text(
+                                                        text = monitor.name,
+                                                        color = Color.Black
+                                                    )
+                                                },
                                                 onClick = {
                                                     selectedMonitor = monitor
                                                     expanded = false
@@ -346,7 +370,12 @@ fun HorayRegisterView(
 
                             Spacer(modifier = Modifier.height(15.dp))
 
-                            Text(text = "Sala", color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start))
+                            Text(
+                                text = "Sala",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.align(Alignment.Start)
+                            )
                             Text(
                                 text = "${roomDetails?.name ?: "Desconocida"}",
                                 color = Color.Black,
@@ -355,12 +384,20 @@ fun HorayRegisterView(
                             )
                             Spacer(modifier = Modifier.height(15.dp))
 
-                            Text(text = "Día", color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start))
+                            Text(
+                                text = "Día",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.align(Alignment.Start)
+                            )
                             OutlinedButton(
                                 onClick = { datePickerDialog.show() },
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(text = if (selectedDate.isEmpty()) "" else selectedDate, color = Color.Black)
+                                Text(
+                                    text = if (selectedDate.isEmpty()) "" else selectedDate,
+                                    color = Color.Black
+                                )
                             }
                             Spacer(modifier = Modifier.height(15.dp))
 
@@ -369,7 +406,11 @@ fun HorayRegisterView(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(text = "Hora inicio", fontWeight = FontWeight.Bold, color = Color.Black)
+                                    Text(
+                                        text = "Hora inicio",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Black
+                                    )
                                     Text(
                                         text = "${roomScheduleId?.hour_start ?: "Desconocida"}",
                                         color = Color.Black,
@@ -380,7 +421,11 @@ fun HorayRegisterView(
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(text = "Hora fin", fontWeight = FontWeight.Bold, color = Color.Black)
+                                    Text(
+                                        text = "Hora fin",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Black
+                                    )
                                     Text(
                                         text = "${roomScheduleId?.hour_end ?: "Desconocida"}",
                                         color = Color.Black,
@@ -413,6 +458,7 @@ fun HorayRegisterView(
                                                 showSuccessDialog = true
                                                 navController.navigate("listarReservas")
                                             }
+
                                             is RegisterBookingResult.Error -> {
                                                 errorMessage = result.message
                                                 showErrorDialog = true
@@ -442,7 +488,7 @@ fun HorayRegisterView(
                                     containerColor = Color(0xFF0A5795)
                                 ),
                                 modifier = Modifier.fillMaxWidth()
-                            ){
+                            ) {
                                 Text(
                                     text = "Consultar reservas",
                                     color = Color(0xFFF2C663)
