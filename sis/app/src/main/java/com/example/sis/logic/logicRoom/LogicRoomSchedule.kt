@@ -39,7 +39,7 @@ suspend fun registerRoomShedule(room_id: Int, hour_start: String, hour_end: Stri
 }
 
 sealed class RoomScheduleResult {
-    data class Success(val rooms: List<RoomScheduleId>) : RoomScheduleResult()
+    data class Success(val schedules: List<RoomScheduleId>) : RoomScheduleResult()
     data class Error(val message: String) : RoomScheduleResult()
 }
 
